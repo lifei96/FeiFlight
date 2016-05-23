@@ -7,12 +7,21 @@
   <title>FeiFlight</title>
 
   <!-- css -->
-  <link href="../css/base.css" rel="stylesheet">
-  <link href="../css/project.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../static/css/base.css">
+  <link rel="stylesheet" type="text/css" href="../static/css/project.css">
 
   <!-- favicon -->
   <!-- ... -->
 </head>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class=flashes>
+  {% for message in messages %}
+  <li>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
 <body class="page-brand">
   <header class="header header-transparent header-waterfall ui-header">
     <ul class="nav nav-list pull-left">
@@ -22,23 +31,32 @@
         </a>
       </li>
     </ul>
-    <a class="header-logo margin-left-no" href="index.html">FeiFlight</a>
+    <a class="header-logo margin-left-no" href="">FeiFlight</a>
     <ul class="nav nav-list pull-right">
       <li class="dropdown margin-right">
         <a class="dropdown-toggle padding-left-no padding-right-no" data-toggle="dropdown">
           <span class="access-hide">Fei Li</span>
-          <span class="avatar avatar-sm"><img alt="alt text for John Smith avatar" src="../images/users/avatar-001.jpg"></span>
+          <span class="avatar avatar-sm"><img alt="alt text for John Smith avatar" src="../static/images/users/avatar-001.jpg"></span>
         </a>
         <ul class="dropdown-menu dropdown-menu-right">
+          {% if(g.authedUser!=None) %}
           <li>
-            <a class="padding-right-lg waves-attach" href="javascript:void(0)"><span class="icon icon-lg margin-right">account_box</span>Profile Settings</a>
+            <a class="padding-right-lg waves-attach" href="profile.html"><span class="icon icon-lg margin-right">account_box</span>{{ g.authedUser.name }}</a>
           </li>
           <li>
-            <a class="padding-right-lg waves-attach" href="javascript:void(0)"><span class="icon icon-lg margin-right">add_to_photos</span>Upload Photo</a>
+            <a class="padding-right-lg waves-attach" href="my-trips.html"><span class="icon icon-lg margin-right">airplanemode_active</span>My trips</a>
           </li>
           <li>
-            <a class="padding-right-lg waves-attach" href="page-login.html"><span class="icon icon-lg margin-right">exit_to_app</span>Logout</a>
+            <a class="padding-right-lg waves-attach" href="logout.html"><span class="icon icon-lg margin-right">exit_to_app</span>Logout</a>
           </li>
+          {% else %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="login.html"><span class="icon icon-lg margin-right">input</span>Login</a>
+          </li>
+          <li>
+            <a class="padding-right-lg waves-attach" href="sign-up.html"><span class="icon icon-lg margin-right">person_add</span>Sign up</a>
+          </li>
+          {% endif %}
         </ul>
       </li>
     </ul>
@@ -49,13 +67,13 @@
         <a class="menu-logo" href="index.html">FeiFlight</a>
         <ul class="nav">
           <li>
-            <a class="waves-attach" href="discount">Discount</a>
+            <a class="waves-attach" href="discount.html">Discount</a>
           </li>
           <li>
-            <a class="waves-attach" href="my-trips">My trips</a>
+            <a class="waves-attach" href="my-trips.html">My trips</a>
           </li>
           <li>
-            <a class="waves-attach" href="about-us">About us</a>
+            <a class="waves-attach" href="about-us.html">About us</a>
           </li>
         </ul>
       </div>
@@ -192,7 +210,7 @@
 
   <!-- js -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-  <script src="../js/base.js"></script>
-  <script src="../js/project.js"></script>
+  <script src="../static/js/base.js"></script>
+  <script src="../static/js/project.js"></script>
 </body>
 </html>

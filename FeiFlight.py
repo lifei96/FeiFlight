@@ -28,7 +28,7 @@ def get_model(table_name, attributes, sql_override=None):
 
     return func
 
-get_user = get_model('users', ['id', 'email', 'name', 'password', 'user_type'])
+get_user = get_model('users', ['id', 'email', 'name', 'mobile', 'password', 'user_type'])
 
 def get_authed_user():
     return get_user(session.get('user_id', None))
@@ -51,7 +51,7 @@ def login_post():
     email = request.form['email']
     password = request.form['password']
     cursor = Connection.cursor()
-    cursor.execute('SELECT id, password, name FROM users WHERE email=%s', [email])
+    cursor.execute('SELECT id, user_type, password, name FROM users WHERE email=%s', [email])
 
     result = cursor.fetchall()
     print(result)
@@ -59,12 +59,15 @@ def login_post():
         flash(u"The user does not exist!", 'error')
         return redirect('/login.html')
 
-    if password != result[0][1]:
+    if password != result[0][2]:
         flash(u"Wrong password!", 'error')
         return redirect('/login.html')
 
     session['user_id'] = result[0][0]
+    session['user_type'] = result[0][1]
+    session['name'] = result[0][3]
     print('Success')
+    flash(u"Welcome " + session['name'] + u" !", 'success')
     return redirect('/index.html')
 
 @app.route('/logout.html')
@@ -100,8 +103,57 @@ def sign_up_post():
     cursor.execute('INSERT INTO customer VALUE(%s, 0, 0)', [number])
     Connection.commit()
     session['user_id'] = number
+    session['user_type'] = 2
+    session['name'] = name
     print('Success')
+    flash(u"Welcome " + session['name'] + u" !", 'success')
     return redirect('/index.html')
+
+@app.route('/profile.html')
+def profile():
+    return render_template('profile.html')
+
+@app.route('/profile.html', methods=["POST"])
+def profile_post():
+    password = request.form['password']
+    name = request.form['name']
+    mobile = request.form['mobile']
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE users SET password=%s, name=%s, mobile=%s WHERE id=%s', [password, name, mobile, session['user_id']])
+    print('Success')
+    flash(u"Profile updated", 'success')
+    return redirect('/profile.html')
+
+@app.route('/admin-portal.html')
+def admin_portal():
+    return render_template('admin-portal.html')
+
+@app.route('/add-company', methods=["POST"])
+def admin_portal_add_company():
+    email = request.form['email']
+    password = request.form['password']
+    name = request.form['name']
+    mobile = request.form['mobile']
+    cursor = Connection.cursor()
+    cursor.execute('SELECT * FROM users WHERE email=%s', [email])
+
+    result = cursor.fetchall()
+    if len(result) != 0:
+        flash(u"The company already exists", 'error')
+        return redirect('/admin-portal.html')
+
+    cursor = Connection.cursor()
+    cursor.execute('SELECT * FROM users')
+    result = cursor.fetchall()
+    number = len(result)
+    cursor = Connection.cursor()
+    cursor.execute('INSERT INTO users VALUE(%s, 1, %s, %s, %s, %s)', [number, password, name, email, mobile])
+    cursor = Connection.cursor()
+    cursor.execute('INSERT INTO company VALUE(%s)', [number])
+    Connection.commit()
+    print('Success')
+    flash(u"Company added", 'success')
+    return redirect('/admin-portal.html')
 
 if __name__ == '__main__':
     app.run()

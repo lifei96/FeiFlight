@@ -15,11 +15,15 @@
 </head>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
-<ul class=flashes>
-  {% for message in messages %}
-  <li>{{ message }}</li>
-  {% endfor %}
-</ul>
+{% for message in messages %}
+<script>
+  window.onload=function () {
+    $('body').snackbar({
+      content: '{{ message }}'
+    });
+  }
+</script>
+{% endfor %}
 {% endif %}
 {% endwith %}
 <body class="page-brand">

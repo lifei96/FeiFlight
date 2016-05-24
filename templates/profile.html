@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="IE=edge" http-equiv="X-UA-Compatible">
+	<meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width" name="viewport">
+	<title>Sign up - FeiFlight</title>
+
+	<!-- css -->
+	<link href="../static/css/base.css" rel="stylesheet">
+	<link href="../static/css/project.css" rel="stylesheet">
+
+	<!-- favicon -->
+	<!-- ... -->
+</head>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<script>
+  window.onload=function () {
+    $('body').snackbar({
+      content: '{{ message }}'
+    });
+  }
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<body class="page-brand">
+  <header class="header header-transparent header-waterfall ui-header">
+    <ul class="nav nav-list pull-left">
+      <li>
+        <a data-toggle="menu" href="#ui_menu">
+          <span class="icon icon-lg">menu</span>
+        </a>
+      </li>
+    </ul>
+    <a class="header-logo margin-left-no" href="index.html">FeiFlight</a>
+    <ul class="nav nav-list pull-right">
+      <li class="dropdown margin-right">
+        <a class="dropdown-toggle padding-left-no padding-right-no" data-toggle="dropdown">
+          <span class="access-hide">{{ g.authedUser.name }}</span>
+          <span class="avatar avatar-sm"><img alt="alt text for John Smith avatar" src="../static/images/users/avatar-001.jpg"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+          {% if(g.authedUser!=None) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="profile.html"><span class="icon icon-lg margin-right">account_box</span>{{ g.authedUser.name }}</a>
+          </li>
+          {% if(g.authedUser['user_type'] == 2) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="my-trips.html"><span class="icon icon-lg margin-right">airplanemode_active</span>My trips</a>
+          </li>
+          {% elif(g.authedUser['user_type'] == 1) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="company-portal.html"><span class="icon icon-lg margin-right">dashboard</span>Portal</a>
+          </li>
+          {% else %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="admin-portal.html"><span class="icon icon-lg margin-right">dashboard</span>Portal</a>
+          </li>
+          {% endif %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="logout.html"><span class="icon icon-lg margin-right">exit_to_app</span>Logout</a>
+          </li>
+          {% else %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="login.html"><span class="icon icon-lg margin-right">input</span>Login</a>
+          </li>
+          <li>
+            <a class="padding-right-lg waves-attach" href="sign-up.html"><span class="icon icon-lg margin-right">person_add</span>Sign up</a>
+          </li>
+          {% endif %}
+        </ul>
+      </li>
+    </ul>
+  </header>
+  <nav aria-hidden="true" class="menu" id="ui_menu" tabindex="-1">
+    <div class="menu-scroll">
+      <div class="menu-content">
+        <a class="menu-logo" href="index.html">FeiFlight</a>
+        <ul class="nav">
+          <li>
+            <a class="waves-attach" href="discount.html">Discount</a>
+          </li>
+          <li>
+            <a class="waves-attach" href="my-trips.html">My trips</a>
+          </li>
+          <li>
+            <a class="waves-attach" href="about-us.html">About us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <main class="content">
+    <div class="content-header ui-content-header">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
+            <h1 class="content-heading">{{ g.authedUser.name }}</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
+          <section class="content-inner margin-top-no">
+            <div class="card">
+              <div class="card-main">
+                <div class="card-header">
+                  <div class="card-inner">
+                    <h1 class="card-heading">Profile</h1>
+                  </div>
+                </div>
+                <div class="card-inner">
+                  <p class="text-center">
+                    <span class="avatar avatar-inline avatar-lg">
+                      <img alt="Login" src="../static/images/users/avatar-001.jpg">
+                    </span>
+                  </p>
+                  <form class="form" action="" method="POST">
+                    <div class="form-group form-group-label form-group-brand">
+                      <div class="row">
+                        <div class="col-md-10 col-md-push-1">
+                          <label class="floating-label" for="ui_email">Email</label>
+                          <input class="form-control" id="ui_email" type="text" name="email" value="{{ g.authedUser.email }}" disabled>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group form-group-label form-group-brand">
+                      <div class="row">
+                        <div class="col-md-10 col-md-push-1">
+                          <label class="floating-label" for="ui_password">Password</label>
+                          <input class="form-control" id="ui_password" type="password" name="password" value="{{ g.authedUser.password }}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group form-group-label form-group-brand">
+                      <div class="row">
+                        <div class="col-md-10 col-md-push-1">
+                          <label class="floating-label" for="ui_name">Name</label>
+                            <input class="form-control" id="ui_name" type="text" name="name" value="{{ g.authedUser.name }}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group form-group-label form-group-brand">
+                      <div class="row">
+                        <div class="col-md-10 col-md-push-1">
+                          <label class="floating-label" for="ui_mobile">Mobile</label>
+                            <input class="form-control" id="ui_mobile" type="text" name="mobile" value="{{ g.authedUser.mobile }}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-10 col-md-push-9">
+                          <button class="btn btn btn-brand waves-attach waves-light" type="submit">Update</button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="ui-footer">
+	  <div class="container">
+		  <p>© 2016 FeiFlight</p>
+	  </div>
+  </footer>
+
+  <!-- js -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <script src="../static/js/base.js"></script>
+  <script src="../static/js/project.js"></script>
+</body>
+</html>

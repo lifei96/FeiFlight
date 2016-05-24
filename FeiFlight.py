@@ -3,7 +3,7 @@
 from flask import Flask, render_template, session, request, redirect, flash, g
 
 import mysql.connector
-import json
+import datetime
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'database16'
@@ -154,6 +154,41 @@ def admin_portal_add_company():
     print('Success')
     flash(u"Company added", 'success')
     return redirect('/admin-portal.html')
+
+@app.route('/company-portal.html')
+def company_portal():
+    return render_template('company-portal.html')
+
+@app.route('/add-flights', methods=["POST"])
+def company_portal_add_flights():
+    flight_id = request.form['flight_id']
+    date_begin = request.form['date_begin']
+    date_end = request.form['date_end']
+    From = request.form['From']
+    to = request.form['to']
+    cabin_class = request.form['cabin_class']
+    depart_time = request.form['depart_time']
+    arrival_time = request.form['arrival_time']
+    price = request.form['price']
+    point = request.form['point']
+    cancel_fee = request.form['cancel_fee']
+    change_fee = request.form['change_fee']
+    seats = request.form['seats']
+    date_b = datetime.datetime.strptime(date_begin, '%Y-%m-%d').date()
+    date_e = datetime.datetime.strptime(date_end, '%Y-%m-%d').date()
+    d_time = datetime.datetime.strptime(depart_time, '%H:%M').time()
+    a_time = datetime.datetime.strptime(arrival_time, '%H:%M').time()
+    Date = date_b
+    while Date <= date_e:
+        print Date
+        cursor = Connection.cursor()
+        cursor.execute('INSERT INTO flight VALUE(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [flight_id, Date, cabin_class, From, to, d_time, a_time, price, point, cancel_fee, change_fee, seats, 0, session['user_id']])
+        Connection.commit()
+        Date = Date + datetime.timedelta(days=1)
+    print('Success')
+    flash(u"Flight added", 'success')
+    print(Exception)
+    return redirect('/company-portal.html')
 
 if __name__ == '__main__':
     app.run()

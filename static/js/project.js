@@ -118,7 +118,7 @@
     container: '',
     firstDay: 0,
     format: 'dd/mmm/yyyy',
-    formatSubmit: 'dd/mm/yyyy',
+    formatSubmit: 'yyyy-mm-dd',
     onClose: function () {
       $('body').snackbar({
         content: 'Depart date selected'
@@ -141,7 +141,7 @@ $('#datepicker_Fei2').pickdate({
   container: '',
   firstDay: 0,
   format: 'dd/mmm/yyyy',
-  formatSubmit: 'dd/mm/yyyy',
+  formatSubmit: 'yyyy-mm-dd',
   onClose: function () {
     $('body').snackbar({
       content: 'Return date selected'
@@ -164,7 +164,7 @@ $('#datepicker_Fei3').pickdate({
   container: '',
   firstDay: 0,
   format: 'dd/mmm/yyyy',
-  formatSubmit: 'dd/mm/yyyy',
+  formatSubmit: 'yyyy-mm-dd',
   onClose: function () {
     $('body').snackbar({
       content: 'Depart date selected'

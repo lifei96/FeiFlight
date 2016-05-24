@@ -122,7 +122,7 @@
                 <div class="card-inner">
                   <div class="tab-content">
                     <div class="tab-pane fade active in" id="Flights">
-
+                      <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#add_new_flights">Add new flights</a>
                     </div>
                     <div class="tab-pane fade" id="Cancel_applications">
 
@@ -141,6 +141,81 @@
       <p>© 2016 FeiFlight</p>
     </div>
   </footer>
+
+  <div aria-hidden="true" class="modal fade" id="add_new_flights" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-heading">
+          <a class="modal-close" data-dismiss="modal">×</a>
+          <h2 class="modal-title">Add new flights</h2>
+        </div>
+        <form class="form" action="add-flights" method="POST">
+          <div class="modal-inner">
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Flight_no"> Flight number </label>
+              <input class="form-control" id="Flight_no" type="text" name="flight_id">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Date_begin"> Date begin </label>
+              <input class="form-control" id="Date_begin" type="text" name="date_begin">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Date_end"> Date end </label>
+              <input class="form-control" id="Date_end" type="text" name="date_end">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="From"> From </label>
+              <input class="form-control" id="From" type="text" name="From">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="To"> TO </label>
+              <input class="form-control" id="To" type="text" name="to">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Cabin_Class">Cabin Class</label>
+              <select class="form-control" id="Cabin_Class" name="cabin_class">
+                <option></option>
+                <option value="Economy">Economy</option>
+                <option value="Business">Business</option>
+                <option value="First Class">First Class</option>
+              </select>
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Depart_time"> Depart time </label>
+              <input class="form-control" id="Depart_time" type="text" name="depart_time">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Arrival_time"> Arrival time </label>
+              <input class="form-control" id="Arrival_time" type="text" name="arrival_time">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Price"> Price </label>
+              <input class="form-control" id="Price" type="text" name="price">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Point"> Point </label>
+              <input class="form-control" id="Point" type="text" name="point">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Cancel_fee"> Cancel fee </label>
+              <input class="form-control" id="Cancel_fee" type="text" name="cancel_fee">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Change_fee"> Change fee </label>
+              <input class="form-control" id="Change_fee" type="text" name="change_fee">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="Seats"> Seats </label>
+              <input class="form-control" id="Seats" type="text" name="seats">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <p class="text-right"><button class="btn btn-flat btn-brand waves-attach" data-dismiss="modal" type="button">Close</button><button class="btn btn-flat btn-brand waves-attach" type="submit">Add</button></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- js -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>

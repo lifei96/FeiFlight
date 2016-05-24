@@ -3346,6 +3346,11 @@ legend + .form-group {
   margin-top: 0;
 }
 
+.form-limit3 {
+  width: 178px;
+  display: inline-block;
+}
+
 .form-limit2 {
   width: 365px;
   display: inline-block;

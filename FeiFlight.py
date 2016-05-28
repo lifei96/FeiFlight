@@ -1,9 +1,10 @@
 # -*- coding:utf-8 -*-
 
-from flask import Flask, render_template, session, request, redirect, flash, g
+from flask import Flask, render_template, session, request, redirect, flash, g, jsonify
 
 import mysql.connector
 import datetime
+import json
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'database16'
@@ -23,9 +24,7 @@ def get_model(table_name, attributes, sql_override=None):
             ret = {}
             for i in range(0, len(attributes)):
                 ret[attributes[i]] = result[0][i]
-
             return ret
-
     return func
 
 get_user = get_model('users', ['id', 'email', 'name', 'mobile', 'password', 'user_type'])
@@ -41,6 +40,43 @@ def before_request():
 @app.route('/index.html')
 def index():
     return render_template('index.html')
+
+@app.route('/index-round-trip', methods=["GET"])
+def index_round_trip():
+    From = request.args.get('From')
+    to = request.args.get('to')
+    d_date = datetime.datetime.strptime(request.args.get('d_date'), '%d/%b/%Y').date()
+    r_date = datetime.datetime.strptime(request.args.get('r_date'), '%d/%b/%Y').date()
+    volume = request.args.get('volume')
+    cabin_class = request.args.get('cabin_class')
+    cursor = Connection.cursor()
+    cursor.execute('SELECT u1.name, f1.id, f1.date, f1.from, f1.depart, f1.to, f1.arrival, f1.price, \
+                    u2.name, f2.id, f2.date, f2.from, f2.depart, f2.to, f2.arrival, f2.price\
+                    FROM flight as f1, users as u1, flight as f2, users as u2\
+                    WHERE f1.company_id=u1.id and f2.company_id=u2.id and f1.from=%s and f1.to=%s\
+                    and f1.date=%s and f1.volume>=%s and f1.class=%s and f2.from=%s and f2.to=%s\
+                    and f2.date=%s and f2.volume>=%s and f2.class=%s and f1.canceled=0 and f2.canceled=0\
+                    ORDER BY f1.price+f2.price', [From, to, d_date, volume, cabin_class, to, From, r_date, volume, cabin_class])
+    result = cursor.fetchall()
+    res = ['', '']
+    res[0] = '<table class="table"><thead><tr><th>Airline</th><th>Flight</th><th>Date</th><th>Depart</th><th>Time</th><th>Arrival</th><th>Time</th><th>Price</th></tr></thead><tbody>'
+    res[1] = ''
+    for j in range(len(result)):
+        item = result[j]
+        res[0] = res[0] + '<tr>'
+        res[1] = res[1] + '<div aria-hidden="true" class="modal fade" id="buy' + str(j) + '" role="dialog" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-heading"><a class="modal-close" data-dismiss="modal">×</a><h2 class="modal-title">Details</h2></div><form class="form" action="buy" method="POST"><div class="modal-inner">'
+        for i in range(7):
+            if i == 0:
+                res[0] = res[0] + '<th>' + '<p>' + str(item[i]) + '</p>' + '<p>' + str(item[i+8]) + '</p>' + '<p><a class="btn btn-brand waves-attach" data-toggle="modal" href="#buy' + str(j) + '">Details</a></p>' + '</th>'
+            elif i != 4 and i !=6:
+                res[0] = res[0] + '<th>' + '<p>' + str(item[i]) + '</p>' + '<p>' + str(item[i+8]) + '</p>' + '</th>'
+            else:
+                res[0] = res[0] + '<th>' + '<p>' + str(item[i])[0:len(str(item[i]))-3] + '</p>' + '<p>' + str(item[i+8])[0:len(str(item[i+8]))-3] + '</p>' + '</th>'
+        res[0] = res[0] + '<th>' + '<p>￥' + str(item[7]) + '</p>' + '<p>￥' + str(item[15]) + '</p>' + '<p>￥' + str(item[7]+item[15]) + '</p>' + '</th>'
+        res[0] = res[0] + '</tr>'
+        res[1] = res[1] + '</div><div class="modal-footer"><p class="text-right"><button class="btn btn-flat btn-brand waves-attach" data-dismiss="modal" type="button">Close</button><button class="btn btn-flat btn-brand waves-attach" type="submit">Buy</button></p></div></form></div></div></div>'
+    res[0] = res[0] + '</tbody></table>'
+    return res[0] + res[1]
 
 @app.route('/login.html')
 def login():

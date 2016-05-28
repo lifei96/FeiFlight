@@ -1,3 +1,27 @@
+$(function() {
+  $("#round_trip_search").click(function() {
+    $.ajax({
+      type: "GET",
+      url: $SCRIPT_ROOT + "/index-round-trip",
+      contentType: "application/json; charset=utf-8",
+      data: {
+        From: $('input[name="From1"]').val(),
+        to: $('input[name="to1"]').val(),
+        d_date: $('input[name="d_date1"]').val(),
+        r_date: $('input[name="r_date1"]').val(),
+        volume: $('select[name="volume1"]').val(),
+        cabin_class: $('select[name="cabin_class1"]').val()
+      },
+      success: function(response) {
+        $('#round_trip_result').html(response);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      }
+    });
+  });
+});
+
 // page-picker.html
 	var $pickerLib = $('.ui-picker-lib'),
 	    pickerMap,

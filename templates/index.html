@@ -26,6 +26,9 @@
 {% endfor %}
 {% endif %}
 {% endwith %}
+<script type="text/javascript">
+  var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
 <body class="page-brand">
   <header class="header header-transparent header-waterfall ui-header">
     <ul class="nav nav-list pull-left">
@@ -122,90 +125,96 @@
                 <div class="card-inner">
                   <div class="tab-content">
                     <div class="tab-pane fade active in" id="Round_trip">
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="From1"> From </label>
-                        <input class="form-control" id="From1" type="text">
+                      <form class="form">
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="From1"> From </label>
+                          <input class="form-control" id="From1" type="text" name="From1">
+                        </div>
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="To1"> To </label>
+                          <input class="form-control" id="To1" type="text" name="to1">
+                        </div>
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="datepicker_Fei1"> Depart Date </label>
+                          <input class="form-control" id="datepicker_Fei1" type="text" name="d_date1">
+                        </div>
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="datepicker_Fei2"> Return Date </label>
+                          <input class="form-control" id="datepicker_Fei2" type="text" name="r_date1">
+                        </div>
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="Travellers1">Travellers</label>
+                          <select class="form-control" id="Travellers1" name="volume1">
+                            <option></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="1">4</option>
+                            <option value="2">5</option>
+                            <option value="3">6</option>
+                            <option value="1">7</option>
+                            <option value="2">8</option>
+                            <option value="3">9</option>
+                          </select>
+                        </div>
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="Cabin_Class1">Cabin Class</label>
+                          <select class="form-control" id="Cabin_Class1" name="cabin_class1">
+                            <option></option>
+                            <option value="Economy">Economy</option>
+                            <option value="Business">Business</option>
+                            <option value="First Class">First Class</option>
+                          </select>
+                        </div>
+                        <button class="btn btn-brand waves-attach form-limit2" type="button" id="round_trip_search" name="round_trip_search">Search flights</button>
+                      </form>
+                      <div id="round_trip_result">
                       </div>
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="To1"> To </label>
-                        <input class="form-control" id="To1" type="text">
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="datepicker_Fei1"> Depart Date </label>
-                        <input class="form-control" id="datepicker_Fei1" type="text">
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="datepicker_Fei2"> Return Date </label>
-                        <input class="form-control" id="datepicker_Fei2" type="text">
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="Travellers1">Travellers</label>
-                        <select class="form-control" id="Travellers1">
-                          <option></option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="1">4</option>
-                          <option value="2">5</option>
-                          <option value="3">6</option>
-                          <option value="1">7</option>
-                          <option value="2">8</option>
-                          <option value="3">9</option>
-                        </select>
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="Cabin_Class1">Cabin Class</label>
-                        <select class="form-control" id="Cabin_Class1">
-                          <option></option>
-                          <option value="Economy">Economy</option>
-                          <option value="Business">Business</option>
-                          <option value="First Class">First Class</option>
-                        </select>
-                      </div>
-                      <button class="btn btn-brand waves-attach form-limit2">Search flights</button>
                     </div>
                     <div class="tab-pane fade" id="One_way">
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="From2"> From </label>
-                        <input class="form-control" id="From2" type="text">
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="To2"> To </label>
-                        <input class="form-control" id="To2" type="text">
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="datepicker_Fei3"> Depart Date </label>
-                        <input class="form-control" id="datepicker_Fei3" type="text">
-                      </div>
-                      <div class="form-group form-group-label form-limit1">
-                        <label class="floating-label" for="datepicker_Fei4">Return Date</label>
-                        <input class="form-control" id="datepicker_Fei4" type="text" disabled>
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="Travellers2">Travellers</label>
-                        <select class="form-control" id="Travellers2">
-                          <option></option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="1">4</option>
-                          <option value="2">5</option>
-                          <option value="3">6</option>
-                          <option value="1">7</option>
-                          <option value="2">8</option>
-                          <option value="3">9</option>
-                        </select>
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit1">
-                        <label class="floating-label" for="Cabin_Class2">Cabin Class</label>
-                        <select class="form-control" id="Cabin_Class2">
-                          <option></option>
-                          <option value="Economy">Economy</option>
-                          <option value="Business">Business</option>
-                          <option value="First Class">First Class</option>
-                        </select>
-                      </div>
-                      <button class="btn btn-brand waves-attach form-limit2">Search flights</button>
+                      <form class="form" action="index-one-way" method="POST">
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="From2"> From </label>
+                          <input class="form-control" id="From2" type="text" name="From">
+                        </div>
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="To2"> To </label>
+                          <input class="form-control" id="To2" type="text" name="to">
+                        </div>
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="datepicker_Fei3"> Depart Date </label>
+                          <input class="form-control" id="datepicker_Fei3" type="text" name="d_date">
+                        </div>
+                        <div class="form-group form-group-label form-limit1">
+                          <label class="floating-label" for="datepicker_Fei4">Return Date</label>
+                          <input class="form-control" id="datepicker_Fei4" type="text" name="r_date" disabled>
+                        </div>
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="Travellers2">Travellers</label>
+                          <select class="form-control" id="Travellers2" name="volume">
+                            <option></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="1">4</option>
+                            <option value="2">5</option>
+                            <option value="3">6</option>
+                            <option value="1">7</option>
+                            <option value="2">8</option>
+                            <option value="3">9</option>
+                          </select>
+                        </div>
+                        <div class="form-group form-group-label form-group-brand form-limit1">
+                          <label class="floating-label" for="Cabin_Class2">Cabin Class</label>
+                          <select class="form-control" id="Cabin_Class2" name="cabin_class">
+                            <option></option>
+                            <option value="Economy">Economy</option>
+                            <option value="Business">Business</option>
+                            <option value="First Class">First Class</option>
+                          </select>
+                        </div>
+                        <button class="btn btn-brand waves-attach form-limit2" type="submit" name="one-way-search">Search flights</button>
+                      </form>
                     </div>
                   </div>
                 </div>
@@ -221,9 +230,10 @@
       <p>© 2016 FeiFlight</p>
     </div>
   </footer>
+  <div id="details"></div>
 
   <!-- js -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <script src="../static/js/jquery.min.js"></script>
   <script src="../static/js/base.js"></script>
   <script src="../static/js/project.js"></script>
 </body>

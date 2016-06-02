@@ -22,6 +22,29 @@ $(function() {
   });
 });
 
+$(function() {
+  $("#one_way_search").click(function() {
+    $.ajax({
+      type: "GET",
+      url: $SCRIPT_ROOT + "/index-one-way",
+      contentType: "application/json; charset=utf-8",
+      data: {
+        From: $('input[name="From2"]').val(),
+        to: $('input[name="To2"]').val(),
+        d_date: $('input[name="d_date2"]').val(),
+        volume: $('select[name="volume2"]').val(),
+        cabin_class: $('select[name="cabin_class2"]').val()
+      },
+      success: function(response) {
+        $('#one_way_result').html(response);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      }
+    });
+  });
+});
+
 // page-picker.html
 	var $pickerLib = $('.ui-picker-lib'),
 	    pickerMap,

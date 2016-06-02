@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="IE=edge" http-equiv="X-UA-Compatible">
+	<meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width" name="viewport">
+	<title>My trips - FeiFlight</title>
+
+	<!-- css -->
+	<link href="../static/css/base.css" rel="stylesheet">
+	<link href="../static/css/project.css" rel="stylesheet">
+
+	<!-- favicon -->
+	<!-- ... -->
+</head>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<script>
+  window.onload=function () {
+    $('body').snackbar({
+      content: '{{ message }}'
+    });
+  }
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<body class="page-brand">
+  <header class="header header-transparent header-waterfall ui-header">
+    <ul class="nav nav-list pull-left">
+      <li>
+        <a data-toggle="menu" href="#ui_menu">
+          <span class="icon icon-lg">menu</span>
+        </a>
+      </li>
+    </ul>
+    <a class="header-logo margin-left-no" href="index.html">FeiFlight</a>
+    <ul class="nav nav-list pull-right">
+      <li class="dropdown margin-right">
+        <a class="dropdown-toggle padding-left-no padding-right-no" data-toggle="dropdown">
+          <span class="access-hide">{{ g.authedUser.name }}</span>
+          <span class="avatar avatar-sm"><img alt="alt text for John Smith avatar" src="../static/images/users/avatar-001.jpg"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+          {% if(g.authedUser!=None) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="profile.html"><span class="icon icon-lg margin-right">account_box</span>{{ g.authedUser.name }}</a>
+          </li>
+          {% if(g.authedUser['user_type'] == 2) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="my-trips.html"><span class="icon icon-lg margin-right">airplanemode_active</span>My trips</a>
+          </li>
+          {% elif(g.authedUser['user_type'] == 1) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="company-portal.html"><span class="icon icon-lg margin-right">dashboard</span>Portal</a>
+          </li>
+          {% else %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="admin-portal.html"><span class="icon icon-lg margin-right">dashboard</span>Portal</a>
+          </li>
+          {% endif %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="logout.html"><span class="icon icon-lg margin-right">exit_to_app</span>Logout</a>
+          </li>
+          {% else %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="login.html"><span class="icon icon-lg margin-right">input</span>Login</a>
+          </li>
+          <li>
+            <a class="padding-right-lg waves-attach" href="sign-up.html"><span class="icon icon-lg margin-right">person_add</span>Sign up</a>
+          </li>
+          {% endif %}
+        </ul>
+      </li>
+    </ul>
+  </header>
+  <nav aria-hidden="true" class="menu" id="ui_menu" tabindex="-1">
+    <div class="menu-scroll">
+      <div class="menu-content">
+        <a class="menu-logo" href="index.html">FeiFlight</a>
+        <ul class="nav">
+          <li>
+            <a class="waves-attach" href="discount.html">Discount</a>
+          </li>
+          <li>
+            <a class="waves-attach" href="my-trips.html">My trips</a>
+          </li>
+          <li>
+            <a class="waves-attach" href="about-us.html">About us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <main class="content">
+    <div class="content-header ui-content-header">
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <h1 class="content-heading">{{ g.authedUser.name }}'s trips </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-lg-push-3 col-sm-10 col-sm-push-1">
+          <section class="content-inner margin-top-no">
+            <div class="card">
+              <div class="card-main">
+                <div class="card-inner">
+                  <p class="card-heading">Account status</p>
+                    <div class="table-responsive">
+                      <table class="table" title="account_status">
+                        <thead>
+                        <tr>
+                          <th>Balance</th>
+                          <th>Points</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{{ balance }}</td>
+                            <td>{{ points }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#add_money">Add money</a>
+                  <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#withdraw">Withdraw money</a>
+                  <p class="card-heading">Orders</p>
+                    <div class="table-responsive">
+                      <table class="table" title="orders">
+                        <thead>
+                        <tr>
+                          <th>Time</th>
+                          <th>From</th>
+                          <th>To</th>
+                          <th>Paid</th>
+                          <th>Canceled</th>
+                          <th>Price</th>
+                          <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                          {% for o in orders %}
+                            <tr>
+                              {% for i in range(6) %}
+                                {% if i==5 %}
+                                  <td>￥{{ o[i] }}</td>
+                                {% else %}
+                                  <td>{{ o[i] }}</td>
+                                {% endif %}
+                              {% endfor %}
+                              <td>
+                                <form class="form" action="get_order" method="POST">
+                                  <input class="form-control" id="order_id" type="hidden" name="order_id" value="{{ o[6] }}">
+                                  <button class="btn btn-brand waves-attach" type="submit">Details</button>
+                                </form>
+                              </td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="ui-footer">
+	  <div class="container">
+		  <p>© 2016 FeiFlight</p>
+	  </div>
+  </footer>
+
+  <div aria-hidden="true" class="modal fade" id="add_money" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-heading">
+          <a class="modal-close" data-dismiss="modal">×</a>
+          <h2 class="modal-title">Add money</h2>
+        </div>
+        <form class="form" action="add_money" method="POST">
+          <div class="modal-inner">
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="add_amount"> Add amount </label>
+              <input class="form-control" id="add_amount" type="text" name="add_amount">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <p class="text-right"><button class="btn btn-flat btn-brand waves-attach" data-dismiss="modal" type="button">Close</button><button class="btn btn-flat btn-brand waves-attach" type="submit">Confirm</button></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div aria-hidden="true" class="modal fade" id="withdraw" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-heading">
+          <a class="modal-close" data-dismiss="modal">×</a>
+          <h2 class="modal-title">Withdraw money</h2>
+        </div>
+        <form class="form" action="withdraw" method="POST">
+          <div class="modal-inner">
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="withdraw_amount">Withdraw amount</label>
+              <input class="form-control" id="withdraw_amount" type="text" name="withdraw_amount">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <p class="text-right"><button class="btn btn-flat btn-brand waves-attach" data-dismiss="modal" type="button">Close</button><button class="btn btn-flat btn-brand waves-attach" type="submit">Confirm</button></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- js -->
+  <script src="../static/js/jquery.min.js"></script>
+  <script src="../static/js/base.js"></script>
+  <script src="../static/js/project.js"></script>
+</body>
+</html>

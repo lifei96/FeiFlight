@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="IE=edge" http-equiv="X-UA-Compatible">
+	<meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width" name="viewport">
+	<title>Order - FeiFlight</title>
+
+	<!-- css -->
+	<link href="../static/css/base.css" rel="stylesheet">
+	<link href="../static/css/project.css" rel="stylesheet">
+
+	<!-- favicon -->
+	<!-- ... -->
+</head>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<script>
+  window.onload=function () {
+    $('body').snackbar({
+      content: '{{ message }}'
+    });
+  }
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<body class="page-brand">
+  <header class="header header-transparent header-waterfall ui-header">
+    <ul class="nav nav-list pull-left">
+      <li>
+        <a data-toggle="menu" href="#ui_menu">
+          <span class="icon icon-lg">menu</span>
+        </a>
+      </li>
+    </ul>
+    <a class="header-logo margin-left-no" href="index.html">FeiFlight</a>
+    <ul class="nav nav-list pull-right">
+      <li class="dropdown margin-right">
+        <a class="dropdown-toggle padding-left-no padding-right-no" data-toggle="dropdown">
+          <span class="access-hide">{{ g.authedUser.name }}</span>
+          <span class="avatar avatar-sm"><img alt="alt text for John Smith avatar" src="../static/images/users/avatar-001.jpg"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+          {% if(g.authedUser!=None) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="profile.html"><span class="icon icon-lg margin-right">account_box</span>{{ g.authedUser.name }}</a>
+          </li>
+          {% if(g.authedUser['user_type'] == 2) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="my-trips.html"><span class="icon icon-lg margin-right">airplanemode_active</span>My trips</a>
+          </li>
+          {% elif(g.authedUser['user_type'] == 1) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="company-portal.html"><span class="icon icon-lg margin-right">dashboard</span>Portal</a>
+          </li>
+          {% else %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="admin-portal.html"><span class="icon icon-lg margin-right">dashboard</span>Portal</a>
+          </li>
+          {% endif %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="logout.html"><span class="icon icon-lg margin-right">exit_to_app</span>Logout</a>
+          </li>
+          {% else %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="login.html"><span class="icon icon-lg margin-right">input</span>Login</a>
+          </li>
+          <li>
+            <a class="padding-right-lg waves-attach" href="sign-up.html"><span class="icon icon-lg margin-right">person_add</span>Sign up</a>
+          </li>
+          {% endif %}
+        </ul>
+      </li>
+    </ul>
+  </header>
+  <nav aria-hidden="true" class="menu" id="ui_menu" tabindex="-1">
+    <div class="menu-scroll">
+      <div class="menu-content">
+        <a class="menu-logo" href="index.html">FeiFlight</a>
+        <ul class="nav">
+          <li>
+            <a class="waves-attach" href="discount.html">Discount</a>
+          </li>
+          <li>
+            <a class="waves-attach" href="my-trips.html">My trips</a>
+          </li>
+          <li>
+            <a class="waves-attach" href="about-us.html">About us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <main class="content">
+    <div class="content-header ui-content-header">
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <h1 class="content-heading">Order #{{ order_id }} </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container container-full">
+      <div class="row">
+        <div class="col-lg-6 col-lg-push-3 col-sm-10 col-sm-push-1">
+          <section class="content-inner margin-top-no">
+            <div class="card">
+              <div class="card-main">
+                <div class="card-inner">
+                  <p class="card-heading">Flight Info</p>
+                    <div class="table-responsive">
+                      <table class="table" title="f_info">
+                        <thead>
+                        <tr>
+                          <th>Airline</th>
+                          <th>Flight</th>
+                          <th>Class</th>
+                          <th>Date</th>
+                          <th>From</th>
+                          <th>Time</th>
+                          <th>To</th>
+                          <th>Time</th>
+                          <th>Point/Cancel/Change</th>
+                          <th>Price per person</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                          {% for flight in f_info %}
+                            <tr>
+                              {% for i in range(12) %}
+                                {% if i==8 %}
+                                  <td>{{ flight[i] }}/￥{{ flight[i+1] }}/￥{{ flight[i+2] }}</td>
+                                {% elif i==11 %}
+                                  <td>￥{{ flight[i] }}</td>
+                                {% elif i<8 %}
+                                  <td>{{ flight[i] }}</td>
+                                {% endif %}
+                              {% endfor %}
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  <p class="card-heading">Passenger Info</p>
+                    <div class="table-responsive">
+                      <table class="table" title="p_info">
+                        <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>ID</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                          {% for person in p_info %}
+                            <tr>
+                              {% for i in range(2) %}
+                                <td>{{ person[i] }}</td>
+                              {% endfor %}
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  <p class="card-heading">Order Info</p>
+                    <div class="table-responsive">
+                      <table class="table" title="o_info">
+                        <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Mobile</th>
+                          <th>Point</th>
+                          <th>Price</th>
+                          <th>Time</th>
+                          <th>Paid</th>
+                          <th>Canceled</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                          {% for o in o_info %}
+                            <tr>
+                              {% for i in range(7) %}
+                                {% if i==3 %}
+                                  <td>￥{{ o[i] }}</td>
+                                {% else %}
+                                  <td>{{ o[i] }}</td>
+                                {% endif %}
+                              {% endfor %}
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  {% if(g.authedUser['user_type'] == 2) %}
+                  {% if o_info[0][5] == "No" %}
+                  <form class="form text-right form-limit5" action="pay_now">
+                    <button class="btn btn-brand waves-attach" type="submit">Pay Now</button>
+                  </form>
+                  {% endif %}
+                  {% if o_info[0][6] != "Yes" %}
+                  <form class="form text-right form-limit5" action="change_order">
+                    <input class="form-control" id="change_paid" type="hidden" name="change_paid" value="{{ o_info[0][5] }}">
+                    <button class="btn btn-brand waves-attach" type="submit">Change</button>
+                  </form>
+                  {% endif %}
+                  {% if o_info[0][6] == "No" %}
+                  <form class="form text-right form-limit5" action="cancel_order">
+                    <input class="form-control" id="cancel_paid" type="hidden" name="cancel_paid" value="{{ o_info[0][5] }}">
+                    <button class="btn btn-brand waves-attach" type="submit">Cancel</button>
+                  </form>
+                  {% endif %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="ui-footer">
+	  <div class="container">
+		  <p>© 2016 FeiFlight</p>
+	  </div>
+  </footer>
+
+  <!-- js -->
+  <script src="../static/js/jquery.min.js"></script>
+  <script src="../static/js/base.js"></script>
+  <script src="../static/js/project.js"></script>
+</body>
+</html>

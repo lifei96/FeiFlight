@@ -149,12 +149,12 @@
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
-                            <option value="1">4</option>
-                            <option value="2">5</option>
-                            <option value="3">6</option>
-                            <option value="1">7</option>
-                            <option value="2">8</option>
-                            <option value="3">9</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
                           </select>
                         </div>
                         <div class="form-group form-group-label form-group-brand form-limit1">
@@ -172,49 +172,51 @@
                       </div>
                     </div>
                     <div class="tab-pane fade" id="One_way">
-                      <form class="form" action="index-one-way" method="POST">
+                      <form class="form">
                         <div class="form-group form-group-label form-group-brand form-limit1">
                           <label class="floating-label" for="From2"> From </label>
-                          <input class="form-control" id="From2" type="text" name="From">
+                          <input class="form-control" id="From2" type="text" name="From2">
                         </div>
                         <div class="form-group form-group-label form-group-brand form-limit1">
                           <label class="floating-label" for="To2"> To </label>
-                          <input class="form-control" id="To2" type="text" name="to">
+                          <input class="form-control" id="To2" type="text" name="To2">
                         </div>
                         <div class="form-group form-group-label form-group-brand form-limit1">
                           <label class="floating-label" for="datepicker_Fei3"> Depart Date </label>
-                          <input class="form-control" id="datepicker_Fei3" type="text" name="d_date">
+                          <input class="form-control" id="datepicker_Fei3" type="text" name="d_date2">
                         </div>
                         <div class="form-group form-group-label form-limit1">
                           <label class="floating-label" for="datepicker_Fei4">Return Date</label>
-                          <input class="form-control" id="datepicker_Fei4" type="text" name="r_date" disabled>
+                          <input class="form-control" id="datepicker_Fei4" type="text" name="r_date2" disabled>
                         </div>
                         <div class="form-group form-group-label form-group-brand form-limit1">
                           <label class="floating-label" for="Travellers2">Travellers</label>
-                          <select class="form-control" id="Travellers2" name="volume">
+                          <select class="form-control" id="Travellers2" name="volume2">
                             <option></option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
-                            <option value="1">4</option>
-                            <option value="2">5</option>
-                            <option value="3">6</option>
-                            <option value="1">7</option>
-                            <option value="2">8</option>
-                            <option value="3">9</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
                           </select>
                         </div>
                         <div class="form-group form-group-label form-group-brand form-limit1">
                           <label class="floating-label" for="Cabin_Class2">Cabin Class</label>
-                          <select class="form-control" id="Cabin_Class2" name="cabin_class">
+                          <select class="form-control" id="Cabin_Class2" name="cabin_class2">
                             <option></option>
                             <option value="Economy">Economy</option>
                             <option value="Business">Business</option>
                             <option value="First Class">First Class</option>
                           </select>
                         </div>
-                        <button class="btn btn-brand waves-attach form-limit2" type="submit" name="one-way-search">Search flights</button>
+                        <button class="btn btn-brand waves-attach form-limit2" type="button" id="one_way_search" name="one_way_search">Search flights</button>
                       </form>
+                      <div id="one_way_result">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -230,7 +232,6 @@
       <p>© 2016 FeiFlight</p>
     </div>
   </footer>
-  <div id="details"></div>
 
   <!-- js -->
   <script src="../static/js/jquery.min.js"></script>

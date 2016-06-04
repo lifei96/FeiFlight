@@ -99,7 +99,7 @@
     <div class="content-header ui-content-header">
       <div class="container">
         <div class="row">
-          <div class="col">
+          <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-1">
             <h1 class="content-heading">Flight {{ f_info[0] }} </h1>
           </div>
         </div>
@@ -113,63 +113,65 @@
               <div class="card-main">
                 <div class="card-inner">
                   <form class="form" action="modify_flight" method="POST">
-                    <div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Flight_no"> Flight number </label>
-                        <input class="form-control" id="Flight_no" type="text" name="flight_id" value="{{ f_info[0] }}" disabled>
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Date_begin"> Date </label>
-                        <input class="form-control" id="Date_begin" type="text" name="date" value="{{ f_info[1] }}" disabled>
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Cabin_Class">Cabin Class</label>
-                        <input class="form-control" id="Cabin_Class" type="text" name="cabin_class" value="{{ f_info[2] }}" disabled>
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Seats"> Seats </label>
-                        <input class="form-control" id="Seats" type="text" name="seats" value="{{ f_info[11] }}">
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="From"> From </label>
-                        <input class="form-control" id="From" type="text" name="From" value="{{ f_info[3] }}" disabled>
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="To"> TO </label>
-                        <input class="form-control" id="To" type="text" name="to" value="{{ f_info[4] }}" disabled>
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Depart_time"> Depart time </label>
-                        <input class="form-control" id="Depart_time" type="text" name="depart_time" value="{{ f_info[5] }}" disabled>
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Arrival_time"> Arrival time </label>
-                        <input class="form-control" id="Arrival_time" type="text" name="arrival_time" value="{{ f_info[6] }}" disabled>
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Price"> Price </label>
-                        <input class="form-control" id="Price" type="text" name="price" value="{{ f_info[7] }}">
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Point"> Point </label>
-                        <input class="form-control" id="Point" type="text" name="point" value="{{ f_info[8] }}">
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Cancel_fee"> Cancel fee </label>
-                        <input class="form-control" id="Cancel_fee" type="text" name="cancel_fee" value="{{ f_info[9] }}">
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Change_fee"> Change fee </label>
-                        <input class="form-control" id="Change_fee" type="text" name="change_fee" value="{{ f_info[10] }}">
-                      </div>
-                      <div class="form-group form-group-label form-group-brand form-limit6">
-                        <label class="floating-label" for="Canceled"> Canceled </label>
-                        <input class="form-control" id="Canceled" type="text" name="canceled" value="{{ f_info[12] }}" disabled>
-                      </div>
-                      <p class="text-right">
-                        <button class="btn btn btn-brand waves-attach waves-light" type="submit">Modify flight</button>
-                        <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#cancel_flight">Cancel flight</a>
-                      </p>
+                    <input class="form-control" type="hidden" name="Flight_id" value="{{ f_info[0] }}">
+                    <input class="form-control" type="hidden" name="Flight_date" value="{{ f_info[1] }}">
+                    <input class="form-control" type="hidden" name="Flight_class" value="{{ f_info[2] }}">
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Flight_no"> Flight number </label>
+                      <input class="form-control" id="Flight_no" type="text" name="flight_id" value="{{ f_info[0] }}" disabled>
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Date"> Date </label>
+                      <input class="form-control" id="Date" type="text" name="date" value="{{ f_info[1] }}" disabled>
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Cabin_Class">Cabin Class</label>
+                      <input class="form-control" id="Cabin_Class" type="text" name="cabin_class" value="{{ f_info[2] }}" disabled>
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Seats"> Seats </label>
+                      <input class="form-control" id="Seats" type="text" name="seats" value="{{ f_info[11] }}">
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="From"> From </label>
+                      <input class="form-control" id="From" type="text" name="From" value="{{ f_info[3] }}" disabled>
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="To"> TO </label>
+                      <input class="form-control" id="To" type="text" name="to" value="{{ f_info[4] }}" disabled>
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Depart_time"> Depart time </label>
+                      <input class="form-control" id="Depart_time" type="text" name="depart_time" value="{{ f_info[5] }}" disabled>
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Arrival_time"> Arrival time </label>
+                      <input class="form-control" id="Arrival_time" type="text" name="arrival_time" value="{{ f_info[6] }}" disabled>
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Price"> Price </label>
+                      <input class="form-control" id="Price" type="text" name="price" value="{{ f_info[7] }}">
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Point"> Point </label>
+                      <input class="form-control" id="Point" type="text" name="point" value="{{ f_info[8] }}">
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Cancel_fee"> Cancel fee </label>
+                      <input class="form-control" id="Cancel_fee" type="text" name="cancel_fee" value="{{ f_info[9] }}">
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Change_fee"> Change fee </label>
+                      <input class="form-control" id="Change_fee" type="text" name="change_fee" value="{{ f_info[10] }}">
+                    </div>
+                    <div class="form-group form-group-label form-group-brand form-limit6">
+                      <label class="floating-label" for="Canceled"> Canceled </label>
+                      <input class="form-control" id="Canceled" type="text" name="canceled" value="{{ f_info[12] }}" disabled>
+                    </div>
+                    <div class="text-right">
+                      <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#passenger_list">Passenger list</a>
+                      <button class="btn btn btn-brand waves-attach waves-light" type="submit">Modify flight</button>
+                      <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#cancel_flight">Cancel flight</a>
                     </div>
                   </form>
                 </div>
@@ -186,6 +188,41 @@
 	  </div>
   </footer>
 
+  <div aria-hidden="true" class="modal fade" id="passenger_list" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-heading">
+          <a class="modal-close" data-dismiss="modal">×</a>
+          <h2 class="modal-title">Passenger list</h2>
+        </div>
+        <div class="modal-inner">
+          <div class="table-responsive">
+            <table class="table" title="p_info">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>ID</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for person in p_info %}
+              <tr>
+                {% for i in range(2) %}
+                <td>{{ person[i] }}</td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <p class="text-right"><button class="btn btn-flat btn-brand waves-attach" data-dismiss="modal" type="button">Close</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div aria-hidden="true" class="modal fade" id="cancel_flight" role="dialog" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -195,9 +232,9 @@
         </div>
         <form class="form" action="cancel_flight" method="POST">
           <div class="modal-inner">
-            <input class="form-control" id="flight_id" type="hidden" name="flight_id" value="{{ f_info[0] }}">
-            <input class="form-control" id="flight_date" type="hidden" name="flight_date" value="{{ f_info[1] }}">
-            <input class="form-control" id="flight_class" type="hidden" name="flight_class" value="{{ f_info[2] }}">
+            <input class="form-control" type="hidden" name="Flight_id" value="{{ f_info[0] }}">
+            <input class="form-control" type="hidden" name="Flight_date" value="{{ f_info[1] }}">
+            <input class="form-control" type="hidden" name="Flight_class" value="{{ f_info[2] }}">
           </div>
           <div class="modal-footer">
             <p class="text-right"><button class="btn btn-flat btn-brand waves-attach" data-dismiss="modal" type="button">Close</button><button class="btn btn-flat btn-brand waves-attach" type="submit">Confirm</button></p>

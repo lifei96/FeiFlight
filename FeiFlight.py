@@ -206,13 +206,11 @@ def order():
             else:
                 flight.append(str(f_res[i][j]))
         f_info.append(flight)
-    print f_info
     cursor = Connection.cursor()
     cursor.execute('SELECT p.name, p.id \
                     FROM passenger as p, order_passenger as o \
                     WHERE p.id=o.passenger_id and o.order_id=%s', [order_id])
     p_info = cursor.fetchall()
-    print p_info
     cursor = Connection.cursor()
     cursor.execute('SELECT o.name, o.mobile, o.point, o.price, o.time, o.paid, o.canceled \
                     FROM `order` as o \
@@ -232,7 +230,6 @@ def order():
             else:
                 o.append(str(o_res[i][j]))
         o_info.append(o)
-    print o_info
     return render_template('order.html', order_id=order_id, f_info=f_info, p_info=p_info, o_info=o_info)
 
 @app.route('/new_order', methods=["POST"])
@@ -297,7 +294,6 @@ def pay_now():
         cursor = Connection.cursor()
         cursor.execute('UPDATE customer SET balance=balance-%s, point=point+%s WHERE user_id=%s', [price, point, user_id])
         Connection.commit()
-        print 1
         cursor = Connection.cursor()
         cursor.execute('UPDATE `order` SET paid=1 WHERE id=%s', [order_id])
         Connection.commit()
@@ -346,7 +342,7 @@ def change_order():
         cursor = Connection.cursor()
         cursor.execute('INSERT INTO order_change_application VALUE(%s, %s, %s, %s, %s, "Pending")', [len(result), order_id, flight_id, flight_d, flight_class])
         Connection.commit()
-        flash('Please wait for the permission from flight company', 'success')
+        flash(u'Please wait for the permission from flight company', 'success')
     return redirect('/order.html')
 
 @app.route('/cancel_order', methods=["POST"])
@@ -369,7 +365,7 @@ def cancel_order():
         cursor = Connection.cursor()
         cursor.execute('INSERT INTO order_cancel_application VALUE(%s, %s, "Pending")', [len(result), order_id])
         Connection.commit()
-        flash('Please wait for the permission from flight company', 'success')
+        flash(u'Please wait for the permission from flight company', 'success')
     return redirect('/order.html')
 
 @app.route('/my-trips.html')
@@ -622,16 +618,13 @@ def company_portal_add_flights():
 @app.route('/flight.html', methods=["POST"])
 def search_flights():
     flight_id = request.form['flight_no']
-    print flight_id
     flight_date = request.form['flight_date']
     flight_class = request.form['flight_class']
     cursor = Connection.cursor()
     cursor.execute('SELECT * FROM flight WHERE id=%s and date=%s and class=%s', [flight_id, flight_date, flight_class])
     result = cursor.fetchall()
-    print result
     f_info = []
     for i in range(len(result[0])):
-        print i
         if i == 12:
             if result[0][i] == 1:
                 f_info.append('Yes')
@@ -639,8 +632,78 @@ def search_flights():
                 f_info.append('No')
         else:
             f_info.append(result[0][i])
-    print f_info
-    return render_template('/flight.html', f_info=f_info)
+    cursor = Connection.cursor()
+    cursor.execute('SELECT p.name, p.id FROM passenger as p, order_passenger as op, order_flight as of \
+                    WHERE of.flight_id=%s and of.flight_date=%s and of.flight_class=%s and of.order_id=op.order_id and \
+                    op.passenger_id=p.id', [flight_id, flight_date, flight_class])
+    p_info = cursor.fetchall()
+    return render_template('/flight.html', f_info=f_info, p_info=p_info)
+
+@app.route('/modify_flight', methods=["POST"])
+def modify_flight():
+    flight_id = request.form['Flight_id']
+    flight_date = request.form['Flight_date']
+    flight_class = request.form['Flight_class']
+    volume = request.form['seats']
+    price = request.form['price']
+    point = request.form['point']
+    cancel_fee = request.form['cancel_fee']
+    change_fee = request.form['change_fee']
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE flight SET volume=%s, price=%s, point=%s, cancel_rule=%s, change_rule=%s WHERE id=%s and \
+                    date=%s and class=%s', [volume, price, point, cancel_fee, change_fee, flight_id, flight_date, flight_class])
+    Connection.commit()
+    cursor = Connection.cursor()
+    cursor.execute('SELECT * FROM flight WHERE id=%s and date=%s and class=%s', [flight_id, flight_date, flight_class])
+    result = cursor.fetchall()
+    f_info = []
+    for i in range(len(result[0])):
+        if i == 12:
+            if result[0][i] == 1:
+                f_info.append('Yes')
+            else:
+                f_info.append('No')
+        else:
+            f_info.append(result[0][i])
+    cursor = Connection.cursor()
+    cursor.execute('SELECT p.name, p.id FROM passenger as p, order_passenger as op, order_flight as of \
+                    WHERE of.flight_id=%s and of.flight_date=%s and of.flight_class=%s and of.order_id=op.order_id and \
+                    op.passenger_id=p.id', [flight_id, flight_date, flight_class])
+    p_info = cursor.fetchall()
+    flash(u'Flight modified', 'success')
+    return render_template('/flight.html', f_info=f_info, p_info=p_info)
+
+@app.route('/cancel_flight', methods=["POST"])
+def cancel_flight():
+    flight_id = request.form['Flight_id']
+    flight_date = request.form['Flight_date']
+    flight_class = request.form['Flight_class']
+    cursor = Connection.cursor()
+    cursor.execute('SELECT id FROM flight_cancel_application')
+    result = cursor.fetchall()
+    fca_id = len(result)
+    cursor = Connection.cursor()
+    cursor.execute('INSERT INTO flight_cancel_application VALUE(%s, %s, %s, %s, "Pending")', [fca_id, flight_id, flight_date, flight_class])
+    Connection.commit()
+    cursor = Connection.cursor()
+    cursor.execute('SELECT * FROM flight WHERE id=%s and date=%s and class=%s', [flight_id, flight_date, flight_class])
+    result = cursor.fetchall()
+    f_info = []
+    for i in range(len(result[0])):
+        if i == 12:
+            if result[0][i] == 1:
+                f_info.append('Yes')
+            else:
+                f_info.append('No')
+        else:
+            f_info.append(result[0][i])
+    cursor = Connection.cursor()
+    cursor.execute('SELECT p.name, p.id FROM passenger as p, order_passenger as op, order_flight as of \
+                    WHERE of.flight_id=%s and of.flight_date=%s and of.flight_class=%s and of.order_id=op.order_id and \
+                    op.passenger_id=p.id', [flight_id, flight_date, flight_class])
+    p_info = cursor.fetchall()
+    flash(u'Please wait for the permission from admin', 'success')
+    return render_template('/flight.html', f_info=f_info, p_info=p_info)
 
 if __name__ == '__main__':
     app.run()

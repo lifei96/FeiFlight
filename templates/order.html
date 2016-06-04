@@ -80,12 +80,14 @@
       <div class="menu-content">
         <a class="menu-logo" href="index.html">FeiFlight</a>
         <ul class="nav">
+          {% if(g.authedUser['user_type'] == 2) %}
           <li>
             <a class="waves-attach" href="discount.html">Discount</a>
           </li>
           <li>
             <a class="waves-attach" href="my-trips.html">My trips</a>
           </li>
+          {% endif %}
           <li>
             <a class="waves-attach" href="about-us.html">About us</a>
           </li>
@@ -194,21 +196,19 @@
                       </table>
                     </div>
                   {% if(g.authedUser['user_type'] == 2) %}
-                  {% if o_info[0][5] == "No" %}
+                  {% if o_info[0][5] == "No" and o_info[0][6] == "No" %}
                   <form class="form text-right form-limit5" action="pay_now">
                     <button class="btn btn-brand waves-attach" type="submit">Pay Now</button>
                   </form>
                   {% endif %}
                   {% if o_info[0][6] != "Yes" %}
-                  <form class="form text-right form-limit5" action="change_order">
-                    <input class="form-control" id="change_paid" type="hidden" name="change_paid" value="{{ o_info[0][5] }}">
-                    <button class="btn btn-brand waves-attach" type="submit">Change</button>
+                  <form class="form text-right form-limit5">
+                    <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#change">Change</a>
                   </form>
                   {% endif %}
                   {% if o_info[0][6] == "No" %}
-                  <form class="form text-right form-limit5" action="cancel_order">
-                    <input class="form-control" id="cancel_paid" type="hidden" name="cancel_paid" value="{{ o_info[0][5] }}">
-                    <button class="btn btn-brand waves-attach" type="submit">Cancel</button>
+                  <form class="form text-right form-limit5">
+                    <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#cancel">Cancel</a>
                   </form>
                   {% endif %}
                   {% endif %}
@@ -225,6 +225,61 @@
 		  <p>© 2016 FeiFlight</p>
 	  </div>
   </footer>
+
+  <div aria-hidden="true" class="modal fade" id="change" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-heading">
+          <a class="modal-close" data-dismiss="modal">×</a>
+          <h2 class="modal-title">Change order</h2>
+        </div>
+        <form class="form" action="change_order" method="POST">
+          <div class="modal-inner">
+            <input class="form-control" id="change_paid" type="hidden" name="change_paid" value="{{ o_info[0][5] }}">
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="flight_id"> Flight number </label>
+              <input class="form-control" id="flight_id" type="text" name="flight_id">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="flight_date"> Date </label>
+              <input class="form-control" id="flight_date" type="text" name="flight_date">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="flight_class">Cabin Class</label>
+              <select class="form-control" id="flight_class" name="flight_class">
+                <option></option>
+                <option value="Economy">Economy</option>
+                <option value="Business">Business</option>
+                <option value="First Class">First Class</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <p class="text-right"><button class="btn btn-flat btn-brand waves-attach" data-dismiss="modal" type="button">Close</button><button class="btn btn-flat btn-brand waves-attach" type="submit">Add</button></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div aria-hidden="true" class="modal fade" id="cancel" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-heading">
+          <a class="modal-close" data-dismiss="modal">×</a>
+          <h2 class="modal-title">Cancel order</h2>
+        </div>
+        <form class="form" action="cancel_order" method="POST">
+          <div class="modal-inner">
+            <input class="form-control" id="cancel_paid" type="hidden" name="cancel_paid" value="{{ o_info[0][5] }}">
+          </div>
+          <div class="modal-footer">
+            <p class="text-right"><button class="btn btn-flat btn-brand waves-attach" data-dismiss="modal" type="button">Close</button><button class="btn btn-flat btn-brand waves-attach" type="submit">Confirm</button></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- js -->
   <script src="../static/js/jquery.min.js"></script>

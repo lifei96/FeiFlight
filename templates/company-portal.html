@@ -80,12 +80,14 @@
       <div class="menu-content">
         <a class="menu-logo" href="index.html">FeiFlight</a>
         <ul class="nav">
+          {% if(g.authedUser['user_type'] == 2) %}
           <li>
             <a class="waves-attach" href="discount.html">Discount</a>
           </li>
           <li>
             <a class="waves-attach" href="my-trips.html">My trips</a>
           </li>
+          {% endif %}
           <li>
             <a class="waves-attach" href="about-us.html">About us</a>
           </li>
@@ -123,6 +125,7 @@
                   <div class="tab-content">
                     <div class="tab-pane fade active in" id="Flights">
                       <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#add_new_flights">Add new flights</a>
+                      <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#search_flights">Search flights</a>
                     </div>
                     <div class="tab-pane fade" id="Cancel_applications">
 
@@ -217,6 +220,40 @@
     </div>
   </div>
 
+  <div aria-hidden="true" class="modal fade" id="search_flights" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-heading">
+          <a class="modal-close" data-dismiss="modal">×</a>
+          <h2 class="modal-title">Search flights</h2>
+        </div>
+        <form class="form" action="flight.html" method="POST">
+          <div class="modal-inner">
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="flight_id"> Flight number </label>
+              <input class="form-control" id="flight_id" type="text" name="flight_no">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="flight_date"> Date </label>
+              <input class="form-control" id="flight_date" type="text" name="flight_date">
+            </div>
+            <div class="form-group form-group-label form-group-brand form-limit3">
+              <label class="floating-label" for="flight_class">Cabin Class</label>
+              <select class="form-control" id="flight_class" name="flight_class">
+                <option></option>
+                <option value="Economy">Economy</option>
+                <option value="Business">Business</option>
+                <option value="First Class">First Class</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <p class="text-right"><button class="btn btn-flat btn-brand waves-attach" data-dismiss="modal" type="button">Close</button><button class="btn btn-flat btn-brand waves-attach" type="submit">Search</button></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <!-- js -->
   <script src="../static/js/jquery.min.js"></script>
   <script src="../static/js/base.js"></script>

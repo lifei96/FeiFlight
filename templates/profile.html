@@ -80,12 +80,14 @@
       <div class="menu-content">
         <a class="menu-logo" href="index.html">FeiFlight</a>
         <ul class="nav">
+          {% if(g.authedUser['user_type'] == 2) %}
           <li>
             <a class="waves-attach" href="discount.html">Discount</a>
           </li>
           <li>
             <a class="waves-attach" href="my-trips.html">My trips</a>
           </li>
+          {% endif %}
           <li>
             <a class="waves-attach" href="about-us.html">About us</a>
           </li>

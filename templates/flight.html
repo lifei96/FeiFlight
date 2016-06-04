@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="IE=edge" http-equiv="X-UA-Compatible">
+	<meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width" name="viewport">
+	<title>Flight - FeiFlight</title>
+
+	<!-- css -->
+	<link href="../static/css/base.css" rel="stylesheet">
+	<link href="../static/css/project.css" rel="stylesheet">
+
+	<!-- favicon -->
+	<!-- ... -->
+</head>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<script>
+  window.onload=function () {
+    $('body').snackbar({
+      content: '{{ message }}'
+    });
+  }
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<body class="page-brand">
+  <header class="header header-transparent header-waterfall ui-header">
+    <ul class="nav nav-list pull-left">
+      <li>
+        <a data-toggle="menu" href="#ui_menu">
+          <span class="icon icon-lg">menu</span>
+        </a>
+      </li>
+    </ul>
+    <a class="header-logo margin-left-no" href="index.html">FeiFlight</a>
+    <ul class="nav nav-list pull-right">
+      <li class="dropdown margin-right">
+        <a class="dropdown-toggle padding-left-no padding-right-no" data-toggle="dropdown">
+          <span class="access-hide">{{ g.authedUser.name }}</span>
+          <span class="avatar avatar-sm"><img alt="alt text for John Smith avatar" src="../static/images/users/avatar-001.jpg"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+          {% if(g.authedUser!=None) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="profile.html"><span class="icon icon-lg margin-right">account_box</span>{{ g.authedUser.name }}</a>
+          </li>
+          {% if(g.authedUser['user_type'] == 2) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="my-trips.html"><span class="icon icon-lg margin-right">airplanemode_active</span>My trips</a>
+          </li>
+          {% elif(g.authedUser['user_type'] == 1) %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="company-portal.html"><span class="icon icon-lg margin-right">dashboard</span>Portal</a>
+          </li>
+          {% else %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="admin-portal.html"><span class="icon icon-lg margin-right">dashboard</span>Portal</a>
+          </li>
+          {% endif %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="logout.html"><span class="icon icon-lg margin-right">exit_to_app</span>Logout</a>
+          </li>
+          {% else %}
+          <li>
+            <a class="padding-right-lg waves-attach" href="login.html"><span class="icon icon-lg margin-right">input</span>Login</a>
+          </li>
+          <li>
+            <a class="padding-right-lg waves-attach" href="sign-up.html"><span class="icon icon-lg margin-right">person_add</span>Sign up</a>
+          </li>
+          {% endif %}
+        </ul>
+      </li>
+    </ul>
+  </header>
+  <nav aria-hidden="true" class="menu" id="ui_menu" tabindex="-1">
+    <div class="menu-scroll">
+      <div class="menu-content">
+        <a class="menu-logo" href="index.html">FeiFlight</a>
+        <ul class="nav">
+          {% if(g.authedUser['user_type'] == 2) %}
+          <li>
+            <a class="waves-attach" href="discount.html">Discount</a>
+          </li>
+          <li>
+            <a class="waves-attach" href="my-trips.html">My trips</a>
+          </li>
+          {% endif %}
+          <li>
+            <a class="waves-attach" href="about-us.html">About us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <main class="content">
+    <div class="content-header ui-content-header">
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <h1 class="content-heading">Flight {{ f_info[0] }} </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container container-full">
+      <div class="row">
+        <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
+          <section class="content-inner margin-top-no">
+            <div class="card">
+              <div class="card-main">
+                <div class="card-inner">
+                  <form class="form" action="modify_flight" method="POST">
+                    <div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Flight_no"> Flight number </label>
+                        <input class="form-control" id="Flight_no" type="text" name="flight_id" value="{{ f_info[0] }}" disabled>
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Date_begin"> Date </label>
+                        <input class="form-control" id="Date_begin" type="text" name="date" value="{{ f_info[1] }}" disabled>
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Cabin_Class">Cabin Class</label>
+                        <input class="form-control" id="Cabin_Class" type="text" name="cabin_class" value="{{ f_info[2] }}" disabled>
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Seats"> Seats </label>
+                        <input class="form-control" id="Seats" type="text" name="seats" value="{{ f_info[11] }}">
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="From"> From </label>
+                        <input class="form-control" id="From" type="text" name="From" value="{{ f_info[3] }}" disabled>
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="To"> TO </label>
+                        <input class="form-control" id="To" type="text" name="to" value="{{ f_info[4] }}" disabled>
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Depart_time"> Depart time </label>
+                        <input class="form-control" id="Depart_time" type="text" name="depart_time" value="{{ f_info[5] }}" disabled>
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Arrival_time"> Arrival time </label>
+                        <input class="form-control" id="Arrival_time" type="text" name="arrival_time" value="{{ f_info[6] }}" disabled>
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Price"> Price </label>
+                        <input class="form-control" id="Price" type="text" name="price" value="{{ f_info[7] }}">
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Point"> Point </label>
+                        <input class="form-control" id="Point" type="text" name="point" value="{{ f_info[8] }}">
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Cancel_fee"> Cancel fee </label>
+                        <input class="form-control" id="Cancel_fee" type="text" name="cancel_fee" value="{{ f_info[9] }}">
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Change_fee"> Change fee </label>
+                        <input class="form-control" id="Change_fee" type="text" name="change_fee" value="{{ f_info[10] }}">
+                      </div>
+                      <div class="form-group form-group-label form-group-brand form-limit6">
+                        <label class="floating-label" for="Canceled"> Canceled </label>
+                        <input class="form-control" id="Canceled" type="text" name="canceled" value="{{ f_info[12] }}" disabled>
+                      </div>
+                      <p class="text-right">
+                        <button class="btn btn btn-brand waves-attach waves-light" type="submit">Modify flight</button>
+                        <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#cancel_flight">Cancel flight</a>
+                      </p>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="ui-footer">
+	  <div class="container">
+		  <p>© 2016 FeiFlight</p>
+	  </div>
+  </footer>
+
+  <div aria-hidden="true" class="modal fade" id="cancel_flight" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-heading">
+          <a class="modal-close" data-dismiss="modal">×</a>
+          <h2 class="modal-title">Cancel order</h2>
+        </div>
+        <form class="form" action="cancel_flight" method="POST">
+          <div class="modal-inner">
+            <input class="form-control" id="flight_id" type="hidden" name="flight_id" value="{{ f_info[0] }}">
+            <input class="form-control" id="flight_date" type="hidden" name="flight_date" value="{{ f_info[1] }}">
+            <input class="form-control" id="flight_class" type="hidden" name="flight_class" value="{{ f_info[2] }}">
+          </div>
+          <div class="modal-footer">
+            <p class="text-right"><button class="btn btn-flat btn-brand waves-attach" data-dismiss="modal" type="button">Close</button><button class="btn btn-flat btn-brand waves-attach" type="submit">Confirm</button></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- js -->
+  <script src="../static/js/jquery.min.js"></script>
+  <script src="../static/js/base.js"></script>
+  <script src="../static/js/project.js"></script>
+</body>
+</html>

@@ -305,6 +305,73 @@ def pay_now():
         flash(u'Balance not enough!', 'error')
     return redirect('/order.html')
 
+@app.route('/change_order', methods=["POST"])
+def change_order():
+    paid = request.form['change_paid']
+    flight_id = request.form['flight_id']
+    flight_date = request.form['flight_date']
+    flight_class = request.form['flight_class']
+    flight_d = datetime.datetime.strptime(flight_date, '%Y-%m-%d').date()
+    print flight_d
+    print flight_class
+    if paid == 'No':
+        cursor = Connection.cursor()
+        cursor.execute('SELECT price, point FROM `order` WHERE id=%s', [order_id])
+        result = cursor.fetchall()
+        cursor = Connection.cursor()
+        cursor.execute('UPDATE customer SET balance=balance+%s, point=point-%s WHERE user_id=%s', [result[0][0], result[0][1], session['user_id']])
+        Connection.commit()
+        cursor = Connection.cursor()
+        cursor.execute('DELETE FROM order_flight WHERE order_id=%s', [order_id])
+        Connection.commit()
+        cursor = Connection.cursor()
+        cursor.execute('INSERT INTO order_flight VALUE(%s, %s, %s, %s)', [order_id, flight_id, flight_d, flight_class])
+        Connection.commit()
+        cursor = Connection.cursor()
+        cursor.execute('SELECT price, point FROM flight WHERE id=%s and date=%s and class=%s', [flight_id, flight_d, flight_class])
+        result = cursor.fetchall()
+        price = result[0][0]
+        point = result[0][1]
+        cursor = Connection.cursor()
+        cursor.execute('SELECT passenger_id FROM order_passenger WHERE order_id=%s', [order_id])
+        result = cursor.fetchall()
+        volume = len(result)
+        cursor = Connection.cursor()
+        cursor.execute('UPDATE `order` SET price=%s, point=%s WHERE id=%s', [price*volume, point*volume, order_id])
+        Connection.commit()
+    else:
+        cursor = Connection.cursor()
+        cursor.execute('SELECT id FROM order_change_application')
+        result = cursor.fetchall()
+        cursor = Connection.cursor()
+        cursor.execute('INSERT INTO order_change_application VALUE(%s, %s, %s, %s, %s, "Pending")', [len(result), order_id, flight_id, flight_d, flight_class])
+        Connection.commit()
+        flash('Please wait for the permission from flight company', 'success')
+    return redirect('/order.html')
+
+@app.route('/cancel_order', methods=["POST"])
+def cancel_order():
+    paid = request.form['cancel_paid']
+    if paid == 'No':
+        cursor = Connection.cursor()
+        cursor.execute('SELECT price, point FROM `order` WHERE id=%s', [order_id])
+        result = cursor.fetchall()
+        cursor = Connection.cursor()
+        cursor.execute('UPDATE customer SET balance=balance+%s, point=point-%s WHERE user_id=%s', [result[0][0], result[0][1], session['user_id']])
+        Connection.commit()
+        cursor = Connection.cursor()
+        cursor.execute('UPDATE `order` SET canceled=1 WHERE id=%s', [order_id])
+        Connection.commit()
+    else:
+        cursor = Connection.cursor()
+        cursor.execute('SELECT id FROM order_cancel_application')
+        result = cursor.fetchall()
+        cursor = Connection.cursor()
+        cursor.execute('INSERT INTO order_cancel_application VALUE(%s, %s, "Pending")', [len(result), order_id])
+        Connection.commit()
+        flash('Please wait for the permission from flight company', 'success')
+    return redirect('/order.html')
+
 @app.route('/my-trips.html')
 def my_trips():
     cursor = Connection.cursor()
@@ -524,7 +591,7 @@ def admin_portal_add_company():
 def company_portal():
     return render_template('company-portal.html')
 
-@app.route('/add-flights', methods=["POST"])
+@app.route('/add_flights', methods=["POST"])
 def company_portal_add_flights():
     flight_id = request.form['flight_id']
     date_begin = request.form['date_begin']
@@ -549,8 +616,31 @@ def company_portal_add_flights():
         cursor.execute('INSERT INTO flight VALUE(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [flight_id, Date, cabin_class, From, to, d_time, a_time, price, point, cancel_fee, change_fee, seats, 0, session['user_id']])
         Connection.commit()
         Date = Date + datetime.timedelta(days=1)
-    flash(u"Flight added", 'success')
+    flash(u"Flights added", 'success')
     return redirect('/company-portal.html')
+
+@app.route('/flight.html', methods=["POST"])
+def search_flights():
+    flight_id = request.form['flight_no']
+    print flight_id
+    flight_date = request.form['flight_date']
+    flight_class = request.form['flight_class']
+    cursor = Connection.cursor()
+    cursor.execute('SELECT * FROM flight WHERE id=%s and date=%s and class=%s', [flight_id, flight_date, flight_class])
+    result = cursor.fetchall()
+    print result
+    f_info = []
+    for i in range(len(result[0])):
+        print i
+        if i == 12:
+            if result[0][i] == 1:
+                f_info.append('Yes')
+            else:
+                f_info.append('No')
+        else:
+            f_info.append(result[0][i])
+    print f_info
+    return render_template('/flight.html', f_info=f_info)
 
 if __name__ == '__main__':
     app.run()

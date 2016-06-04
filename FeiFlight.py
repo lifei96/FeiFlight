@@ -350,12 +350,6 @@ def cancel_order():
     paid = request.form['cancel_paid']
     if paid == 'No':
         cursor = Connection.cursor()
-        cursor.execute('SELECT price, point FROM `order` WHERE id=%s', [order_id])
-        result = cursor.fetchall()
-        cursor = Connection.cursor()
-        cursor.execute('UPDATE customer SET balance=balance+%s, point=point-%s WHERE user_id=%s', [result[0][0], result[0][1], session['user_id']])
-        Connection.commit()
-        cursor = Connection.cursor()
         cursor.execute('UPDATE `order` SET canceled=1 WHERE id=%s', [order_id])
         Connection.commit()
     else:
@@ -519,12 +513,10 @@ def sign_up_post():
     mobile = request.form['mobile']
     cursor = Connection.cursor()
     cursor.execute('SELECT * FROM users WHERE email=%s', [email])
-
     result = cursor.fetchall()
     if len(result) != 0:
         flash(u"The user already exists", 'error')
         return redirect('/sign-up.html')
-
     cursor = Connection.cursor()
     cursor.execute('SELECT * FROM users')
     result = cursor.fetchall()
@@ -557,7 +549,32 @@ def profile_post():
 
 @app.route('/admin-portal.html')
 def admin_portal():
-    return render_template('admin-portal.html')
+    cursor = Connection.cursor()
+    cursor.execute('SELECT * FROM flight_cancel_application')
+    cancel_info = cursor.fetchall()
+    return render_template('admin-portal.html', cancel_info=cancel_info)
+
+@app.route('/f_cancel_accept', methods=["POST"])
+def f_cancel_accept():
+    cancel_id = request.form['cancel_id']
+    flight_id = request.form['flight_id']
+    flight_date = request.form['flight_date']
+    flight_class = request.form['flight_class']
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE flight SET canceled=1 WHERE id=%s and date=%s and class=%s', [flight_id, flight_date, flight_class])
+    Connection.commit()
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE flight_cancel_application SET process="Accepted" WHERE id=%s', [cancel_id])
+    Connection.commit()
+    return redirect('/admin-portal.html')
+
+@app.route('/f_cancel_reject', methods=["POST"])
+def f_cancel_reject():
+    cancel_id = request.form['cancel_id']
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE flight_cancel_application SET process="Rejected" WHERE id=%s', [cancel_id])
+    Connection.commit()
+    return redirect('/admin-portal.html')
 
 @app.route('/add-company', methods=["POST"])
 def admin_portal_add_company():
@@ -585,7 +602,88 @@ def admin_portal_add_company():
 
 @app.route('/company-portal.html')
 def company_portal():
-    return render_template('company-portal.html')
+    cursor = Connection.cursor()
+    cursor.execute('SELECT * FROM order_cancel_application')
+    cancel_info = cursor.fetchall()
+    cursor = Connection.cursor()
+    cursor.execute('SELECT * FROM order_change_application')
+    change_info = cursor.fetchall()
+    print change_info
+    return render_template('company-portal.html', cancel_info=cancel_info, change_info=change_info)
+
+@app.route('/cancel_accept', methods=["POST"])
+def cancel_accept():
+    cancel_id = request.form['cancel_id']
+    o_id = request.form['o_id']
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE `order` SET canceled=1 WHERE id=%s', [o_id])
+    Connection.commit()
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE order_cancel_application SET process="Accepted" WHERE id=%s', [cancel_id])
+    Connection.commit()
+    cursor = Connection.cursor()
+    cursor.execute('SELECT price, point, customer_id FROM `order` WHERE id=%s', [o_id])
+    result = cursor.fetchall()
+    Connection.commit()
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE customer SET balance=balance+%s, point=point-%s WHERE user_id=%s',
+                   [result[0][0], result[0][1], result[0][2]])
+    Connection.commit()
+    return redirect('/company-portal.html')
+
+@app.route('/cancel_reject', methods=["POST"])
+def cancel_reject():
+    cancel_id = request.form['cancel_id']
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE order_cancel_application SET process="Rejected" WHERE id=%s', [cancel_id])
+    Connection.commit()
+    return redirect('/company-portal.html')
+
+@app.route('/change_accept', methods=["POST"])
+def change_accept():
+    change_id = request.form['change_id']
+    o_id = request.form['o_id']
+    flight_id = request.form['flight_id']
+    flight_date = request.form['flight_date']
+    flight_class = request.form['flight_class']
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE order_change_application SET process="Accepted" WHERE id=%s', [change_id])
+    Connection.commit()
+    cursor = Connection.cursor()
+    cursor.execute('SELECT price, point, customer_id FROM `order` WHERE id=%s', [o_id])
+    result = cursor.fetchall()
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE customer SET balance=balance+%s, point=point-%s WHERE user_id=%s',
+                   [result[0][0], result[0][1], result[0][2]])
+    Connection.commit()
+    cursor = Connection.cursor()
+    cursor.execute('DELETE FROM order_flight WHERE order_id=%s', [o_id])
+    Connection.commit()
+    cursor = Connection.cursor()
+    cursor.execute('INSERT INTO order_flight VALUE(%s, %s, %s, %s)', [o_id, flight_id, flight_date, flight_class])
+    Connection.commit()
+    cursor = Connection.cursor()
+    cursor.execute('SELECT price, point FROM flight WHERE id=%s and date=%s and class=%s',
+                   [flight_id, flight_date, flight_class])
+    result = cursor.fetchall()
+    price = result[0][0]
+    point = result[0][1]
+    cursor = Connection.cursor()
+    cursor.execute('SELECT passenger_id FROM order_passenger WHERE order_id=%s', [o_id])
+    result = cursor.fetchall()
+    volume = len(result)
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE `order` SET price=%s, point=%s WHERE id=%s', [price * volume, point * volume, o_id])
+    Connection.commit()
+    return redirect('/company-portal.html')
+
+@app.route('/change_reject', methods=["POST"])
+def change_reject():
+    change_id = request.form['change_id']
+    cursor = Connection.cursor()
+    cursor.execute('UPDATE order_change_application SET process="Rejected" WHERE id=%s', [change_id])
+    Connection.commit()
+    return redirect('/company-portal.html')
 
 @app.route('/add_flights', methods=["POST"])
 def company_portal_add_flights():

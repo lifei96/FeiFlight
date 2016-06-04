@@ -99,13 +99,13 @@
     <div class="content-header ui-content-header">
       <div class="container">
         <div class="row">
-          <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
+          <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-1">
             <h1 class="content-heading">Portal</h1>
           </div>
         </div>
       </div>
     </div>
-    <div class="container">
+    <div class="container container-full">
       <div class="row">
         <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
           <section class="content-inner margin-top-no">
@@ -115,6 +115,9 @@
                   <ul class="nav nav-justified">
                     <li class="active">
                       <a class="waves-attach" data-toggle="tab" href="#Flights">Flights</a>
+                    </li>
+                    <li>
+                      <a class="waves-attach" data-toggle="tab" href="#Change_applications">Change applications</a>
                     </li>
                     <li>
                       <a class="waves-attach" data-toggle="tab" href="#Cancel_applications">Cancel applications</a>
@@ -127,8 +130,107 @@
                       <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#add_new_flights">Add new flights</a>
                       <a class="btn btn-brand waves-attach waves-light" data-toggle="modal" href="#search_flights">Search flights</a>
                     </div>
+                    <div class="tab-pane fade" id="Change_applications">
+                      <div class="card">
+                        <div class="card-main">
+                          <div class="card-inner">
+                            <p class="card-heading">Order change applications</p>
+                            <div class="table-responsive">
+                              <table class="table" title="change">
+                                <thead>
+                                <tr>
+                                  <th>Order id</th>
+                                  <th>Flight number</th>
+                                  <th>Date</th>
+                                  <th>Cabin class</th>
+                                  <th>Process</th>
+                                  <th></th>
+                                  <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for c in change_info %}
+                                <tr>
+                                  {% for i in range(1, 6) %}
+                                  <td>{{ c[i] }}</td>
+                                  {% endfor %}
+                                  <td>
+                                    {% if c[5]=="Pending" %}
+                                    <form class="form" action="change_accept" method="POST">
+                                      <input class="form-control" type="hidden" name="change_id" value="{{ c[0] }}">
+                                      <input class="form-control" type="hidden" name="o_id" value="{{ c[1] }}">
+                                      <input class="form-control" type="hidden" name="flight_id" value="{{ c[2] }}">
+                                      <input class="form-control" type="hidden" name="flight_date" value="{{ c[3] }}">
+                                      <input class="form-control" type="hidden" name="flight_class" value="{{ c[4] }}">
+                                      <button class="btn btn-flat btn-brand waves-attach" type="submit">Accept</button>
+                                    </form>
+                                    {% endif %}
+                                  </td>
+                                  <td>
+                                    {% if c[5]=="Pending" %}
+                                    <form class="form" action="change_reject" method="POST">
+                                      <input class="form-control" type="hidden" name="change_id" value="{{ c[0] }}">
+                                      <input class="form-control" type="hidden" name="o_id" value="{{ c[1] }}">
+                                      <button class="btn btn-flat btn-brand waves-attach" type="submit">Reject</button>
+                                    </form>
+                                    {% endif %}
+                                  </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div class="tab-pane fade" id="Cancel_applications">
-
+                      <div class="card">
+                        <div class="card-main">
+                          <div class="card-inner">
+                            <p class="card-heading">Order cancel applications</p>
+                            <div class="table-responsive">
+                              <table class="table" title="cancel">
+                                <thead>
+                                <tr>
+                                  <th>Order id</th>
+                                  <th>Process</th>
+                                  <th></th>
+                                  <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for c in cancel_info %}
+                                <tr>
+                                  {% for i in range(1, 3) %}
+                                  <td>{{ c[i] }}</td>
+                                  {% endfor %}
+                                  <td>
+                                    {% if c[2]=="Pending" %}
+                                    <form class="form" action="cancel_accept" method="POST">
+                                      <input class="form-control" type="hidden" name="cancel_id" value="{{ c[0] }}">
+                                      <input class="form-control" type="hidden" name="o_id" value="{{ c[1] }}">
+                                      <button class="btn btn-flat btn-brand waves-attach" type="submit">Accept</button>
+                                    </form>
+                                    {% endif %}
+                                  </td>
+                                  <td>
+                                    {% if c[2]=="Pending" %}
+                                    <form class="form" action="cancel_reject" method="POST">
+                                      <input class="form-control" type="hidden" name="cancel_id" value="{{ c[0] }}">
+                                      <input class="form-control" type="hidden" name="o_id" value="{{ c[1] }}">
+                                      <button class="btn btn-flat btn-brand waves-attach" type="submit">Reject</button>
+                                    </form>
+                                    {% endif %}
+                                  </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

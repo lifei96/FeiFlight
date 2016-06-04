@@ -99,13 +99,13 @@
     <div class="content-header ui-content-header">
       <div class="container">
         <div class="row">
-          <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
+          <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-1">
             <h1 class="content-heading">Portal</h1>
           </div>
         </div>
       </div>
     </div>
-    <div class="container">
+    <div class="container container-full">
       <div class="row">
         <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
           <section class="content-inner margin-top-no">
@@ -159,6 +159,55 @@
                       </form>
                     </div>
                     <div class="tab-pane fade" id="Cancel_applications">
+                      <div class="card">
+                        <div class="card-main">
+                          <div class="card-inner">
+                            <p class="card-heading">Flight cancel applications</p>
+                            <div class="table-responsive">
+                              <table class="table" title="cancel">
+                                <thead>
+                                <tr>
+                                  <th>Flight id</th>
+                                  <th>Date</th>
+                                  <th>Cabin class</th>
+                                  <th>Process</th>
+                                  <th></th>
+                                  <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for c in cancel_info %}
+                                <tr>
+                                  {% for i in range(1, 5) %}
+                                  <td>{{ c[i] }}</td>
+                                  {% endfor %}
+                                  <td>
+                                    {% if c[4]=="Pending" %}
+                                    <form class="form" action="f_cancel_accept" method="POST">
+                                      <input class="form-control" type="hidden" name="cancel_id" value="{{ c[0] }}">
+                                      <input class="form-control" type="hidden" name="flight_id" value="{{ c[1] }}">
+                                      <input class="form-control" type="hidden" name="flight_date" value="{{ c[2] }}">
+                                      <input class="form-control" type="hidden" name="flight_class" value="{{ c[3] }}">
+                                      <button class="btn btn-flat btn-brand waves-attach" type="submit">Accept</button>
+                                    </form>
+                                    {% endif %}
+                                  </td>
+                                  <td>
+                                    {% if c[4]=="Pending" %}
+                                    <form class="form" action="f_cancel_reject" method="POST">
+                                      <input class="form-control" type="hidden" name="cancel_id" value="{{ c[0] }}">
+                                      <button class="btn btn-flat btn-brand waves-attach" type="submit">Reject</button>
+                                    </form>
+                                    {% endif %}
+                                  </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div class="tab-pane fade" id="Add_company">
                       <form class="form" action="add-company" method="POST">

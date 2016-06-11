@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta content="IE=edge" http-equiv="X-UA-Compatible">
 	<meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width" name="viewport">
-	<title>User-orders - FeiFlight</title>
+	<title>Sign up - FeiFlight</title>
 
 	<!-- css -->
 	<link href="../static/css/base.css" rel="stylesheet">
@@ -97,53 +97,26 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
-            <h1 class="content-heading">{{ user_name }}'s orders</h1>
+            <h1 class="content-heading">About us</h1>
           </div>
         </div>
       </div>
     </div>
     <div class="container">
       <div class="row">
-        <div class="col-lg-6 col-lg-push-3 col-sm-10 col-sm-push-1">
+        <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
           <section class="content-inner margin-top-no">
             <div class="card">
               <div class="card-main">
+                <div class="card-header">
+                  <div class="card-inner">
+                    <h1 class="card-heading">FeiFlight</h1>
+                  </div>
+                </div>
                 <div class="card-inner">
-                  <p class="card-heading">Orders</p>
-                    <div class="table-responsive">
-                      <table class="table" title="orders">
-                        <thead>
-                        <tr>
-                          <th>Time</th>
-                          <th>From</th>
-                          <th>To</th>
-                          <th>Paid</th>
-                          <th>Canceled</th>
-                          <th>Price</th>
-                          <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                          {% for o in orders %}
-                            <tr>
-                              {% for i in range(6) %}
-                                {% if i==5 %}
-                                  <td>￥{{ o[i] }}</td>
-                                {% else %}
-                                  <td>{{ o[i] }}</td>
-                                {% endif %}
-                              {% endfor %}
-                              <td>
-                                <form class="form" action="get_order" method="POST">
-                                  <input class="form-control" id="order_id" type="hidden" name="order_id" value="{{ o[6] }}">
-                                  <button class="btn btn-brand waves-attach" type="submit">Details</button>
-                                </form>
-                              </td>
-                            </tr>
-                          {% endfor %}
-                        </tbody>
-                      </table>
-                    </div>
+                  <p>FeiFlight is a flight booking system.</p>
+                  <p>It's also a project of Database course in Fudan University</p>
+                  <p>Author: Fei Li</p>
                 </div>
               </div>
             </div>

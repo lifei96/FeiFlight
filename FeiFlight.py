@@ -5,6 +5,7 @@ from flask import Flask, render_template, session, request, redirect, flash, g, 
 import mysql.connector
 import datetime
 import json
+import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'database16'
@@ -536,6 +537,10 @@ def sign_up_post():
 def profile():
     return render_template('profile.html')
 
+@app.route('/about-us.html')
+def about_us():
+    return render_template('about-us.html')
+
 @app.route('/profile.html', methods=["POST"])
 def profile_post():
     password = request.form['password']
@@ -553,6 +558,12 @@ def admin_portal():
     cursor.execute('SELECT * FROM flight_cancel_application')
     cancel_info = cursor.fetchall()
     return render_template('admin-portal.html', cancel_info=cancel_info)
+
+@app.route('/order-xml', methods=["POST"])
+def order_xml():
+    os.system("mysql -udatabase16 -pdatabase16 --xml -e 'SELECT * FROM FeiFlight.order' > /home/lifei/Database16/Project/FeiFlight/database/XML/order.xml")
+    flash(u"Orders Exported", 'success')
+    return redirect('/admin-portal.html')
 
 @app.route('/f_cancel_accept', methods=["POST"])
 def f_cancel_accept():

@@ -7,10 +7,13 @@ import datetime
 import json
 import os
 
+
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'database16'
 
+
 Connection = mysql.connector.connect(host='localhost', port=3306, user='database16', password='database16', database='FeiFlight')
+
 
 def get_model(table_name, attributes, sql_override=None):
     def func(id):
@@ -28,22 +31,29 @@ def get_model(table_name, attributes, sql_override=None):
             return ret
     return func
 
+
 get_user = get_model('users', ['id', 'email', 'name', 'mobile', 'password', 'user_type'])
+
 
 def get_authed_user():
     return get_user(session.get('user_id', None))
+
 
 @app.before_request
 def before_request():
     g.authedUser = get_authed_user()
     g.url_path = request.path
 
+
 @app.route('/index.html')
 def index():
     return render_template('index.html')
 
+
 search_result = []
 passenger_num = 0
+
+
 @app.route('/index-round-trip', methods=["GET"])
 def index_round_trip():
     From = request.args.get('From')
@@ -116,6 +126,7 @@ def index_round_trip():
     res[0] = res[0] + '</tbody></table>'
     return res[0] + res[1]
 
+
 @app.route('/index-one-way', methods=["GET"])
 def index_one_way():
     From = request.args.get('From')
@@ -187,7 +198,9 @@ def index_one_way():
     print res
     return res[0] + res[1]
 
+
 order_id = 0
+
 
 @app.route('/order.html')
 def order():
@@ -233,6 +246,7 @@ def order():
         o_info.append(o)
     return render_template('order.html', order_id=order_id, f_info=f_info, p_info=p_info, o_info=o_info)
 
+
 @app.route('/new_order', methods=["POST"])
 def new_order():
     passengers = []
@@ -275,6 +289,7 @@ def new_order():
         Connection.commit()
     return redirect("/order.html")
 
+
 @app.route('/pay_now')
 def pay_now():
     user_id = session['user_id']
@@ -301,6 +316,7 @@ def pay_now():
     else:
         flash(u'Balance not enough!', 'error')
     return redirect('/order.html')
+
 
 @app.route('/change_order', methods=["POST"])
 def change_order():
@@ -346,6 +362,7 @@ def change_order():
         flash(u'Please wait for the permission from flight company', 'success')
     return redirect('/order.html')
 
+
 @app.route('/cancel_order', methods=["POST"])
 def cancel_order():
     paid = request.form['cancel_paid']
@@ -362,6 +379,7 @@ def cancel_order():
         Connection.commit()
         flash(u'Please wait for the permission from flight company', 'success')
     return redirect('/order.html')
+
 
 @app.route('/my-trips.html')
 def my_trips():
@@ -404,6 +422,7 @@ def my_trips():
     print orders
     return render_template('my-trips.html', balance=balance, points=points, orders=orders)
 
+
 @app.route('/add_money', methods=["POST"])
 def add_money():
     add_amount = request.form['add_amount']
@@ -411,6 +430,7 @@ def add_money():
     cursor.execute('UPDATE customer SET balance=balance+%s WHERE user_id=%s', [add_amount, session['user_id']])
     Connection.commit()
     return redirect('my-trips.html')
+
 
 @app.route('/withdraw', methods=["POST"])
 def withdraw():
@@ -420,17 +440,20 @@ def withdraw():
     Connection.commit()
     return redirect('my-trips.html')
 
+
 @app.route('/get_order', methods=["POST"])
 def get_order():
     global order_id
     order_id = request.form['order_id']
     return redirect("/order.html")
 
+
 @app.route('/admin-portal-order-id', methods=["POST"])
 def admin_portal_order_id():
     global order_id
     order_id = request.form['order_id']
     return redirect("/order.html")
+
 
 @app.route('/admin-portal-user-id', methods=["POST"])
 def admin_portal_user_id():
@@ -473,9 +496,11 @@ def admin_portal_user_id():
     print orders
     return render_template('user-orders.html', orders=orders, user_name=user_name)
 
+
 @app.route('/login.html')
 def login():
     return render_template('login.html')
+
 
 @app.route('/login.html', methods=["POST"])
 def login_post():
@@ -497,14 +522,17 @@ def login_post():
     flash(u"Welcome " + session['name'] + u" !", 'success')
     return redirect('/index.html')
 
+
 @app.route('/logout.html')
 def page_logout():
     del session['user_id']
     return redirect('/index.html')
 
+
 @app.route('/sign-up.html')
 def sign_up():
     return render_template('sign-up.html')
+
 
 @app.route('/sign-up.html', methods=["POST"])
 def sign_up_post():
@@ -533,13 +561,16 @@ def sign_up_post():
     flash(u"Welcome " + session['name'] + u" !", 'success')
     return redirect('/index.html')
 
+
 @app.route('/profile.html')
 def profile():
     return render_template('profile.html')
 
+
 @app.route('/about-us.html')
 def about_us():
     return render_template('about-us.html')
+
 
 @app.route('/profile.html', methods=["POST"])
 def profile_post():
@@ -552,6 +583,7 @@ def profile_post():
     flash(u"Profile updated", 'success')
     return redirect('/profile.html')
 
+
 @app.route('/admin-portal.html')
 def admin_portal():
     cursor = Connection.cursor()
@@ -559,11 +591,13 @@ def admin_portal():
     cancel_info = cursor.fetchall()
     return render_template('admin-portal.html', cancel_info=cancel_info)
 
+
 @app.route('/order-xml', methods=["POST"])
 def order_xml():
     os.system("mysql -udatabase16 -pdatabase16 --xml -e 'SELECT * FROM FeiFlight.order' > /home/lifei/Database16/Project/FeiFlight/database/XML/order.xml")
     flash(u"Orders Exported", 'success')
     return redirect('/admin-portal.html')
+
 
 @app.route('/f_cancel_accept', methods=["POST"])
 def f_cancel_accept():
@@ -579,6 +613,7 @@ def f_cancel_accept():
     Connection.commit()
     return redirect('/admin-portal.html')
 
+
 @app.route('/f_cancel_reject', methods=["POST"])
 def f_cancel_reject():
     cancel_id = request.form['cancel_id']
@@ -586,6 +621,7 @@ def f_cancel_reject():
     cursor.execute('UPDATE flight_cancel_application SET process="Rejected" WHERE id=%s', [cancel_id])
     Connection.commit()
     return redirect('/admin-portal.html')
+
 
 @app.route('/add-company', methods=["POST"])
 def admin_portal_add_company():
@@ -611,6 +647,7 @@ def admin_portal_add_company():
     flash(u"Company added", 'success')
     return redirect('/admin-portal.html')
 
+
 @app.route('/company-portal.html')
 def company_portal():
     cursor = Connection.cursor()
@@ -621,6 +658,7 @@ def company_portal():
     change_info = cursor.fetchall()
     print change_info
     return render_template('company-portal.html', cancel_info=cancel_info, change_info=change_info)
+
 
 @app.route('/cancel_accept', methods=["POST"])
 def cancel_accept():
@@ -642,6 +680,7 @@ def cancel_accept():
     Connection.commit()
     return redirect('/company-portal.html')
 
+
 @app.route('/cancel_reject', methods=["POST"])
 def cancel_reject():
     cancel_id = request.form['cancel_id']
@@ -649,6 +688,7 @@ def cancel_reject():
     cursor.execute('UPDATE order_cancel_application SET process="Rejected" WHERE id=%s', [cancel_id])
     Connection.commit()
     return redirect('/company-portal.html')
+
 
 @app.route('/change_accept', methods=["POST"])
 def change_accept():
@@ -688,6 +728,7 @@ def change_accept():
     Connection.commit()
     return redirect('/company-portal.html')
 
+
 @app.route('/change_reject', methods=["POST"])
 def change_reject():
     change_id = request.form['change_id']
@@ -695,6 +736,7 @@ def change_reject():
     cursor.execute('UPDATE order_change_application SET process="Rejected" WHERE id=%s', [change_id])
     Connection.commit()
     return redirect('/company-portal.html')
+
 
 @app.route('/add_flights', methods=["POST"])
 def company_portal_add_flights():
@@ -724,6 +766,7 @@ def company_portal_add_flights():
     flash(u"Flights added", 'success')
     return redirect('/company-portal.html')
 
+
 @app.route('/flight.html', methods=["POST"])
 def search_flights():
     flight_id = request.form['flight_no']
@@ -747,6 +790,7 @@ def search_flights():
                     op.passenger_id=p.id', [flight_id, flight_date, flight_class])
     p_info = cursor.fetchall()
     return render_template('/flight.html', f_info=f_info, p_info=p_info)
+
 
 @app.route('/modify_flight', methods=["POST"])
 def modify_flight():
@@ -782,6 +826,7 @@ def modify_flight():
     flash(u'Flight modified', 'success')
     return render_template('/flight.html', f_info=f_info, p_info=p_info)
 
+
 @app.route('/cancel_flight', methods=["POST"])
 def cancel_flight():
     flight_id = request.form['Flight_id']
@@ -813,6 +858,7 @@ def cancel_flight():
     p_info = cursor.fetchall()
     flash(u'Please wait for the permission from admin', 'success')
     return render_template('/flight.html', f_info=f_info, p_info=p_info)
+
 
 if __name__ == '__main__':
     app.run()
